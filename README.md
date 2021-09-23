@@ -25,8 +25,8 @@ delle tecnologie analizzate. </p>
 
 
 # Description
-<p> The repository contains within it the collection of all the exercises for didactic purposes carried out during the school year 2021/2022 in the field of Technologies. </p>
-<p> The subdivision into folders, each of which collects all the exercises concerning the topic specified in its name, allows you to have easy access to the material you need. </p>
+<p> The repository contains the collection of all the exercises for didactic purposes carried out during the school year 2021/2022 in the field of Technologies. </p>
+<p> The subdivision into folders, each of which collects all the exercises concerning the topic specified in its name, allows you to easily access to the material you need. </p>
 <p> The present exercises allow you to get to the heart of each topic through practical exercises that aim to consolidate the theoretical knowledge and the syntax of each
 of the technologies analyzed. </p>
 <p> It is possible to find the theoretical notes at the basis of the realization of the exercises <a href="http://robertomana.it/" target="_blank"> <i> on the website of Professor Roberto Mana. </i> </a> </p>
