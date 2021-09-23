@@ -41,5 +41,5 @@ file testuale.js contenente le istruzioni da eseguire: node filename.js
   
   
 L'impostazione del path set PATH = %PATH%;C:\Program Files\node.js
-nelle ultime versioni fatto in automatico dall‟installer.</p>
+nelle ultime versioni fatto in automatico dall'installer.</p>
 
