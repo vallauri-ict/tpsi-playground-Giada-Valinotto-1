@@ -1,7 +1,7 @@
 {
-  "name": "es04_dispatcher",
+  "name": "5_004_readfilets",
   "version": "1.0.0",
-  "description": "",
+  "description": " ",
   "main": "server.ts",
   "dependencies": {
     "@types/mime": "^2.0.3",
@@ -12,6 +12,6 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Giada Valinotto",
   "license": "ISC"
 }
