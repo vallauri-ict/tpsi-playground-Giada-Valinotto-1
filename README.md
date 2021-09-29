@@ -22,7 +22,9 @@ delle tecnologie analizzate. </p>
 <p> È possibile avere accesso ad esercitazioni in merito ai seguente argomenti: </p> 
 
 - Node.js
-
+    - JavaScript
+    - TypeScript
+    
 
 # Description
 <p> The repository contains the collection of all the exercises for didactic purposes carried out during the school year 2021/2022 in the field of Technologies. </p>
@@ -35,3 +37,5 @@ of the technologies analyzed. </p>
 <p> You can have access to tutorials on the following topics: </p>
 
 - Node.js
+    - JavaScript
+    - TypeScript
