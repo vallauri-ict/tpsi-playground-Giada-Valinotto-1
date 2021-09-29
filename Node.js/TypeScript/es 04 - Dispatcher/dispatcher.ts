@@ -5,7 +5,7 @@ import * as _fs from "fs";
 import * as _mime from "mime"; 
 import { addListener } from "process";
 import { inherits } from "util";
-let HEADERS = require("headers.json");
+let HEADERS = require("./headers.json");
 let paginaErrore : string;
 class Dispatcher{
     /*definisco proprietà e metodi*/
@@ -88,15 +88,17 @@ function staticListener(req,res,risorsa)
     _fs.readFile(fileName, function(err,data){
         if(!err)
         {
-            res.writeHead(200,_mime.getType(fileName)); //Non so se è un file html o css, ecc
+            let header= {"Content-Type": _mime.getType(fileName)};
+            res.writeHead(200,header); //Non so se è un file html o css, ecc
             res.write(data);
             res.end();
         }
         else
         {
+            console.log(`        ${err.code}:${err.message}`);
             //il client si aspetta una pagina
-            res.writeHead(404,HEADERS.html);
-            res.write(paginaErrore);
+            res.writeHead(404,HEADERS.text);
+            res.write("Servizio non trovato");
             res.end();
         }
     });
