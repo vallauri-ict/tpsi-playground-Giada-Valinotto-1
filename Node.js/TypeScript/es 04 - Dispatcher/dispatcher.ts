@@ -3,8 +3,10 @@ import * as _http from "http";
 import * as _url from "url"; 
 import * as _fs from "fs"; 
 import * as _mime from "mime"; 
+import * as _querystring from "query-string";
 import { addListener } from "process";
 import { inherits } from "util";
+import { json } from "stream/consumers";
 let HEADERS = require("./headers.json");
 let paginaErrore : string;
 class Dispatcher{
@@ -42,36 +44,31 @@ class Dispatcher{
         }
     }
 
-    dispatch(req,res)
-    {
-        //lettura di motodo, risorsa e parametri
-        let metodo = req.method;
-        let url = _url.parse(req.url, true);
-        let risorsa = url.pathname;
-        let parametri = url.query;
-
-        console.log(`${this.prompt} ${metodo}:${risorsa}${JSON.stringify(parametri)}`);
-
-        if(risorsa.startsWith("/api/"))
+    dispatch(req,res){
+        let metodo=req.method.toUpperCase();
+        if(metodo="GET")
         {
-            if(risorsa in this.listeners[metodo])
-            {
-                let _callback = this.listeners[metodo][risorsa]; //vado a cercare ciò che devo eseguire con la callback
-                _callback(req,res); //lancio in esecuzione la callback
-            }
-            else
-            {
-                //Errore 404
-                res.writeHead(404,HEADERS.text);
-                res.write("Servizio non trovato");
-                res.end();
-            }
+            innerDispatch(req,res);
         }
-        else
-        {
-            //Richiesta di una pagina che vado a cercare dal File System
-            //Per comodità chiamo una procedura esterna
-            staticListener(req,res,risorsa);
+        else{
+            let parametriBody : string ="";
+            req.on("data", function(data)
+            {
+                parametriBody+=data;
+            })
+            let paramJson={};
+            req.on("end", function()
+            {
+                //provo una conversione json per vedere se i param sono json o URLencode
+                try{
+                    //se i par sono json, la conversione è andata a buon fine
+                    paramJson=JSON.parse(parametriBody);
+                }
+                catch(errpr)
+                {
+                    parametriBody= _querystring.parse();
+                }
+            })
         }
     }
 }
@@ -117,7 +114,41 @@ function init()
     }
     });
 }
+function innerDispatch(req,res)
+{
+    //lettura di motodo, risorsa e parametri
+    let metodo = req.method;
+    let url = _url.parse(req.url, true);
+    let risorsa = url.pathname;
+    let parametri = url.query;
 
+    //creo una nuova chiave su req
+    req["GET"]=parametri;
+
+    console.log(`${this.prompt} ${metodo}:${risorsa}${JSON.stringify(parametri)}`);
+
+    if(risorsa.startsWith("/api/"))
+    {
+        if(risorsa in this.listeners[metodo])
+        {
+            let _callback = this.listeners[metodo][risorsa]; //vado a cercare ciò che devo eseguire con la callback
+            _callback(req,res); //lancio in esecuzione la callback
+        }
+        else
+        {
+            //Errore 404
+            res.writeHead(404,HEADERS.text);
+            res.write("Servizio non trovato");
+            res.end();
+        }
+    }
+    else
+    {
+        //Richiesta di una pagina che vado a cercare dal File System
+        //Per comodità chiamo una procedura esterna
+        staticListener(req,res,risorsa);
+    }
+}
 //Export 
 module.exports = new Dispatcher();
 
