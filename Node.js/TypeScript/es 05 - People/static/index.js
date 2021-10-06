@@ -1,18 +1,15 @@
+"use strict"
 $(document).ready(function() {
+    let _lstNazioni = $("#lstNazioni");
+    let _tabStudenti = $("#tabStudenti");
+    let _divDettagli = $("#divDettagli");
 
-    $("#btnInvia").on("click", function() {
-        let request = inviaRichiesta("post", "/api/servizio1?id=5", {"nome":"pippo"}); //Passo id 5 in get e nome pippo in post 
-        request.fail(errore);
-        request.done(function(data) {
-            alert(JSON.stringify(data));
-        });
-    });
-    
-    $("#btnInvia2").on("click", function() {
-        let request = inviaRichiesta("get", "/api/servizio2", {"nome":"pluto"});
-        request.fail(errore);
-        request.done(function(data) {
-            alert(JSON.stringify(data));
-        });
-    });
-});
+    _divDettagli.hide()
+
+ //All’avvio il client invia al server una richiesta /nazioni e visualizza una lista con tutte le nazioni ricevute.
+    let requestNazioni= inviaRichiesta("GET","/api/nazioni");
+    requestNazioni.fail(errore);
+    requestNazioni.done(function(data){
+        console.log(data);
+    })
+})
