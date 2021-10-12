@@ -16,20 +16,40 @@ console.log("Server in ascolto sulla porta " + port);
 // *********** Registrazione dei servizi ********** 
 
 dispatcher.addListener("GET", "/api/nazioni", function (req, res) { //sempre
-    res.writeHead(200, HEADERS.json);    //sempre
-
-    let nazioni=[];
+ let nazioni=[];
     for (const person of people.results) {
         if(person.location.country)
         {
             if(!nazioni.includes(person.location.country))
             {
                 nazioni.push(person.location.country)
-            }
+
+             }
         }
     }
     nazioni.sort();
 
+    res.writeHead(200, HEADERS.json);    //sempre
     res.write(JSON.stringify({ "nazioni": nazioni})); //sempre
     res.end();    //sempre
+});
+
+dispatcher.addListener("GET", "/api/persone", function (req, res) {
+let nazione = req["GET"].nazione;
+let vetPeople = [];
+for (const person of people.results) {
+    if(person.location.country==nazione)
+    {
+        let jsonP={
+            "name":person.name.title + " " + person.name.first + " " +person.name.last,
+            "city": person.location.city,
+            "state": person.location.state,
+            "cell":person.cell
+        };
+        vetPeople.push(jsonP);
+    }
+}
+res.writeHead(200, HEADERS.json);    //sempre
+res.write(JSON.stringify(vetPeople)); //sempre
+res.end();    //sempre
 });
