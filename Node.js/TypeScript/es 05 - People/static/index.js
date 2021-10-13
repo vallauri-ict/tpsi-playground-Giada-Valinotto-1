@@ -30,17 +30,17 @@ $(document).ready(function() {
         requestPersone.done(function(data){
         console.log(data);
         _tabStudenti.empty(); // = .html("");
-        for (const person of people)
+        for (const person of data)
         {
             let tr=$("<tr>").appendTo(_tabStudenti);
             for (const key in person)
                 { //Il forin scorre le chiavi di un json
-                $("<tr>").appendTo(tr).html(person[key]); //person.key NON va bene
+                $("<td>").appendTo(tr).html(person[key]); //person.key NON va bene
                 }
-                let td=  $("<tr>").appendTo(tr);
-                $("button").appendTo(td).html("Dettagli");
-                td=  $("<tr>").appendTo(tr);
-                $("button").appendTo(td).html("Elimina");              
+                let td=  $("<td>").appendTo(tr);
+                $("<button>").appendTo(td).html("Dettagli");
+                td=  $("<td>").appendTo(tr);
+                $("<button>").appendTo(td).html("Elimina");              
         }
     })
     }
