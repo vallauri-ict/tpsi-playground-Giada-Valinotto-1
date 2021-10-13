@@ -1,82 +1,96 @@
 import * as _http from "http";
-let HEADERS = require("./headers.json");
-let dispatcher = require("./dispatcher.ts");
-//All’avvio il server legge e mantiene in memoria il contenuto del file (semplice require)
-let people = require("./persons.json");
-let port: number = 1337;
+import {HEADERS} from "./headers";
+import {Dispatcher} from "./dispatcher";
+import {persons} from "./persons";
+let port : number = 1337;
 
-let server = _http.createServer(function (req, res) {
+let dispatcher :Dispatcher = new Dispatcher();
+
+let server = _http.createServer(function(req, res){
     dispatcher.dispatch(req, res);
-});
+})
 server.listen(port);
 console.log("Server in ascolto sulla porta " + port);
 
-
-
-// *********** Registrazione dei servizi ********** 
-
-dispatcher.addListener("GET", "/api/nazioni", function (req, res) { //sempre
- let nazioni=[];
-    for (const person of people.results) {
-        if(person.location.country)
-        {
-            if(!nazioni.includes(person.location.country))
-            {
-                nazioni.push(person.location.country)
-
-             }
+//---------------------------
+//Registrazione dei servizi
+//--------------------------- 
+dispatcher.addListener("GET", "/api/nazioni", function(req, res){
+    
+    let nazioni = [];
+    for (const person of persons["results"]) {
+        if(!nazioni.includes(person.location.country)){
+            nazioni.push(person.location.country);
         }
     }
+    //ordinamento
     nazioni.sort();
-
-    res.writeHead(200, HEADERS.json);    //sempre
-    res.write(JSON.stringify({ "nazioni": nazioni})); //sempre
-    res.end();    //sempre
+    res.writeHead(200,HEADERS.json);
+    res.write(JSON.stringify({"nazioni": nazioni}));
+    res.end();
 });
 
-dispatcher.addListener("GET", "/api/persone", function (req, res) {
-let nazione = req["GET"].nazione;
-let vetPeople = [];
-for (const person of people.results) {
-    if(person.location.country==nazione)
-    {
-        let jsonP={
-            "name":person.name.title + " " + person.name.first + " " +person.name.last,
-            "city": person.location.city,
-            "state": person.location.state,
-            "cell":person.cell
-        };
-        vetPeople.push(jsonP);
+dispatcher.addListener("GET", "/api/persone", function(req, res){
+    let nazione :string = req["GET"].nazione;
+    let vetPersons :object[] = [];
+    for (const person of persons.results) {
+        if(person.location.country == nazione){
+            /*name = title + " " + first + " " + last city, state, cell*/
+            let jsonPerson :object = {
+                "name": person.name.title +" " + person.name.first +" "+person.name.last,
+                "city": person.location.city,
+                "state": person.location.state,
+                "cell": person.cell
+            };
+            vetPersons.push(jsonPerson);
+        }  
     }
-}
-res.writeHead(200, HEADERS.json);    //sempre
-res.write(JSON.stringify(vetPeople)); //sempre
-res.end();    //sempre
+    res.writeHead(200,HEADERS.json);
+    res.write(JSON.stringify(vetPersons));
+    res.end();
 });
 
-dispatcher.addListener("GET", "/api/persone", function (req, res) {
-    let personReq = req["BODY"].person; //pesco la cosa richiesta dal client
+dispatcher.addListener("PATCH", "/api/dettagli", function(req, res){
+    let personReq = req["BODY"].person;
     let trovato = false;
     let person;
-    for (person of people.results) {
-        if((person.name.title + " " + person.name.first + " " +person.name.last) == personReq)
-        {
-            trovato=true;
-            break; //quando faccio il break person punta alla persona corretnte, quella giusta
+    for (person of persons.results) {
+        if((person.name.title +" " + person.name.first +" "+person.name.last) == personReq){
+            trovato= true;
+            break;
         }
     }
-    if(trovato)
-    {
-        //spedisco la risposta
-        res.writeHead(200, HEADERS.json);    //sempre
-        res.write(JSON.stringify(person)); //sempre
-        res.end();    //sempre
+    if(trovato){
+        res.writeHead(200,HEADERS.json);
+        res.write(JSON.stringify(person));
+        res.end();
     }
-    else
-    {
-        //spedisco la risposta di errore -> errore sui json mando indietro un text
-        res.writeHead(404, HEADERS.text);    //sempre
-        res.write("Persona non trovata"); //sempre
-        res.end();    //sempre
+    else{
+        res.writeHead(404,HEADERS.text);
+        res.write("Persona non trovata");
+        res.end();
     }
-})
+});
+
+dispatcher.addListener("DELETE", "/api/elimina", function(req, res){
+    let personReq = req["BODY"].person;
+    let trovato = false;
+    let i;    
+    for (i=0; i<persons.results.length; i++) {
+        if((persons.results[i].name.title +" " + persons.results[i].name.first +" "+persons.results[i].name.last) == personReq){
+            trovato= true;
+            break;
+        }
+    }
+    if(trovato){
+        persons.results.splice(i,1);
+        res.writeHead(200,HEADERS.json);
+        res.write(JSON.stringify("Eliminato correttamnete"));
+        res.end();
+    }
+    else{
+        res.writeHead(404,HEADERS.text);
+        res.write("Persona non trovata");
+        res.end();
+    }
+});
