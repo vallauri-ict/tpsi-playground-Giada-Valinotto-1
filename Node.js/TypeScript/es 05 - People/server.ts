@@ -53,3 +53,30 @@ res.writeHead(200, HEADERS.json);    //sempre
 res.write(JSON.stringify(vetPeople)); //sempre
 res.end();    //sempre
 });
+
+dispatcher.addListener("GET", "/api/persone", function (req, res) {
+    let personReq = req["BODY"].person; //pesco la cosa richiesta dal client
+    let trovato = false;
+    let person;
+    for (person of people.results) {
+        if((person.name.title + " " + person.name.first + " " +person.name.last) == personReq)
+        {
+            trovato=true;
+            break; //quando faccio il break person punta alla persona corretnte, quella giusta
+        }
+    }
+    if(trovato)
+    {
+        //spedisco la risposta
+        res.writeHead(200, HEADERS.json);    //sempre
+        res.write(JSON.stringify(person)); //sempre
+        res.end();    //sempre
+    }
+    else
+    {
+        //spedisco la risposta di errore -> errore sui json mando indietro un text
+        res.writeHead(404, HEADERS.text);    //sempre
+        res.write("Persona non trovata"); //sempre
+        res.end();    //sempre
+    }
+})
