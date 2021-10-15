@@ -23,7 +23,7 @@ delle tecnologie analizzate. </p>
 
 - Node.js
     - JavaScript
-    - TypeScript
+    -  [TypeScript](https://github.com/vallauri-ict/tpsi-playground-Giada-Valinotto-1/tree/main/Node.js/TypeScript)
     
 
 # Description
@@ -38,4 +38,4 @@ of the technologies analyzed. </p>
 
 - Node.js
     - JavaScript
-    - TypeScript
+    - [TypeScript](https://github.com/vallauri-ict/tpsi-playground-Giada-Valinotto-1/tree/main/Node.js/TypeScript)
