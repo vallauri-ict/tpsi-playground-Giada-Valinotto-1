@@ -22,7 +22,7 @@ delle tecnologie analizzate. </p>
 <p> È possibile avere accesso ad esercitazioni in merito ai seguente argomenti: </p> 
 
 - Node.js
-    - JavaScript
+    - [JavaScript](https://github.com/vallauri-ict/tpsi-playground-Giada-Valinotto-1/tree/main/Node.js/JavaScript)
     -  [TypeScript](https://github.com/vallauri-ict/tpsi-playground-Giada-Valinotto-1/tree/main/Node.js/TypeScript)
     
 
@@ -37,5 +37,5 @@ of the technologies analyzed. </p>
 <p> You can have access to tutorials on the following topics: </p>
 
 - Node.js
-    - JavaScript
+    - [JavaScript](https://github.com/vallauri-ict/tpsi-playground-Giada-Valinotto-1/tree/main/Node.js/JavaScript)
     - [TypeScript](https://github.com/vallauri-ict/tpsi-playground-Giada-Valinotto-1/tree/main/Node.js/TypeScript)
