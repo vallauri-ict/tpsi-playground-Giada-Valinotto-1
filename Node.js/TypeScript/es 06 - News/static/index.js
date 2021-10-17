@@ -1,42 +1,42 @@
 "use strict"
+$(window).ready(function(){
+    let _wrapper=$("#wrapper");
+    let _news = $("#news");
+    let request = inviaRichiesta("get", "/api/elenco");
+    request.fail(errore);
+    request.done(function(notizie){
+        console.log(notizie);
+        for (const notizia of notizie) {
+            let span= $("<span>");
+            span.text(notizia.titolo);
+            span.addClass("titolo");
+            span.appendTo(_wrapper);
+            let a = $("<a>");
+            a.text(" Leggi ");
+            a.prop("href","#");
+            a.prop("notizia", notizia);
+            a.appendTo(_wrapper);
+            span= $("<span>");
+            span.addClass("nVis");
+            span.text("[Visualizzato "+ notizia.visualizzazioni +" volte]");
+            span.appendTo(_wrapper);
+            let br= $("<br>");
+            br.appendTo(_wrapper);
+        }
+    })
+    _wrapper.on("click","a",leggiFile);
 
-$(document).ready(function() {
-    let _wrapper = $("#wrapper");
-    let _divNotizia = $("#news");
-
-    onload();
-
-    function onload() {
-        let requestElenco = inviaRichiesta("GET", "/api/elenco");
-        requestElenco.fail(errore);
-        requestElenco.done(function(data) {
-            _wrapper.empty();
-            for (const notizia of data) {
-                let spanTitolo = $("<span>");
-                spanTitolo.addClass("titolo");
-                spanTitolo.text(notizia.titolo);
-                spanTitolo.appendTo(_wrapper);
-                let a = $("<a>");
-                a.prop("href", "#");
-                a.text("Leggi")
-                a.on("click", leggi);
-                a.prop("file", notizia.file)
-                a.appendTo(_wrapper);
-                let spanVis = $("<span>");
-                spanVis.addClass("nVis");
-                spanVis.text(`[Visualizzato ${notizia.visualizzazioni} volte]`)
-                spanVis.appendTo(_wrapper);
-                $("<br>").appendTo(_wrapper);
-            }
-        })
-    }
-
-    function leggi() {
-        let requestDettagli = inviaRichiesta("POST", "/api/dettagli", { "file": $(this).prop("file") });
-        requestDettagli.fail(errore)
-        requestDettagli.done(function(data) {
-            _divNotizia.html(data.file);
-            onload();
+    function leggiFile()
+    {
+        let nomeFile= $(this).prop("notizia").file;
+        console.log(nomeFile);
+        let request = inviaRichiesta("POST","/api/dettagli", {"nomeFile":nomeFile});
+        request.fail(errore);
+        request.done(function(data)
+        {
+            console.log(data);
+            let contenuto= data.file;
+            _news.html(contenuto);
         })
     }
 })

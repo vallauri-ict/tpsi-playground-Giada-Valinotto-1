@@ -1,50 +1,45 @@
-import * as _http from "http"
-const _fs = require("fs");
-const _mime = require("mime");
-import { HEADERS } from "./headers"
-import { Dispatcher } from "./dispatcher"
-import { notizie } from "./notizie"
-import { json } from "stream/consumers";
-let port: number = 1337
+//questo file è il main
+"use strict"
 
-let dispatcher: Dispatcher = new Dispatcher();
+import * as _http from "http";
+import {HEADERS} from "./headers";
+import {notizie} from "./notizie";
+import * as _fs from "fs";
+import * as _mime from "mime";
+let paginaErrore:string;
+//NB: esportiamo in questa maniera perchè in dispatcher non c'è alcuna funzione
+//o metodo o property al di fuori della classe dispatcher in se
+//nel caso in cui ci siano più funzioni, vedere esercizio 3.
+import {Dispatcher} from "./dispatcher";
+const PORT:number = 1337;
 
-let server = _http.createServer(function (req, res) {
-    dispatcher.dispatch(req, res)
-})
-server.listen(port)
-console.log("Server in ascolto sulla porta " + port)
+let dispatcher = new Dispatcher();
 
-// -------------------------
-// Registrazione dei servizi
-// -------------------------
-dispatcher.addListener("GET", "/api/elenco", function (req, res) {
-    res.writeHead(200, HEADERS.json)
-    res.write(JSON.stringify(notizie))
-    res.end()
+let server = _http.createServer(function(req,res){
+    dispatcher.dispatch(req,res);
 })
 
-dispatcher.addListener("POST", "/api/dettagli", function (req, res) {
-    let file = "./news/" + req["BODY"].file;
-    console.log(file)
+server.listen(PORT);
+console.log("Server in ascolto sulla porta " + PORT);
 
-    _fs.readFile(file, function (error, data) {
-        if (!error) {
-            for (let i = 0; i < notizie.length; i++) {
-                if (notizie[i].file == req["BODY"].file) {
-                    notizie[i].visualizzazioni = notizie[i].visualizzazioni + 1;
-                    break;
-                }
-            }
-            let header = { "Content-Type": _mime.getType(file) };
-            res.writeHead(200, header);
-            res.write(JSON.stringify({ "file": `${data}` }));
-            res.end();
+//aggiungo tutti i listener
+dispatcher.addListener("GET","/api/elenco",function(req,res){
+    //invio la risposta
+    res.writeHead(200,HEADERS.json);
+    res.write(JSON.stringify(notizie));
+    res.end();
+})
+
+dispatcher.addListener("POST", "/api/dettagli", function(req,res){
+    let risorsa = "./news/" + req["BODY"].nomeFile;
+    _fs.readFile(risorsa, function (err, data) {
+        if (!err) {
+          res.writeHead(200, HEADERS.json);
+          res.write(JSON.stringify({"file":`${data}`}));
         } else {
-            res.writeHead(404, HEADERS.text);
-            res.write("Notizia non trovata");
-            res.end();
+          res.writeHead(404, HEADERS.html);
+          res.write("<h1>File non trovato</h1>");
         }
-    })
-
+        res.end();
+      });
 })
