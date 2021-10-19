@@ -3,7 +3,7 @@
 
 import * as _http from "http";
 import {HEADERS} from "./headers";
-import {notizie} from "./notizie";
+import {notizie} from "./notizie"; //Lasciando json, sarebbe import notizie from "./notizie.json"
 import * as _fs from "fs";
 import * as _mime from "mime";
 let paginaErrore:string;

@@ -4,10 +4,10 @@ import * as _fs from "fs";
 import * as _mime from "mime";
 import * as _querystring from "query-string";
 
-let HEADERS = require("./headers.json");
+import HEADERS from "./headers.json";
 let paginaErrore: string;
 
-class Dispatcher {
+export class Dispatcher {
     prompt: string = ">>> ";
     // Ogni listener è costituito da un json del tipo {"risorsa":"callback"}
     // I listener sono suddivisi in base al tipo di chiamata
@@ -124,4 +124,4 @@ function init() {
     });
 }
 
-module.exports = new Dispatcher();
+//module.exports = new Dispatcher();
