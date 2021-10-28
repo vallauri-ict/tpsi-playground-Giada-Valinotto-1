@@ -86,4 +86,8 @@ MongoDB è costituito da due applicazioni principali che sono:
 
 Maggiori informazioni sono reperibili su [questo link](https://docs.mongodb.com/launch-manage/).
 
+![image](https://user-images.githubusercontent.com/62563624/139273971-5ecbfde2-67e4-4d7c-956b-19165887165e.png)
+
+
+
 _stud. Giada Valinotto, 5B Informatica 2021/2022_
