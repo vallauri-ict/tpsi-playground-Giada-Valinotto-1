@@ -27,6 +27,7 @@ delle tecnologie analizzate. </p>
 - Node.js
     - [JavaScript](https://github.com/vallauri-ict/tpsi-playground-Giada-Valinotto-1/tree/main/Node.js/JavaScript)
     -  [TypeScript](https://github.com/vallauri-ict/tpsi-playground-Giada-Valinotto-1/tree/main/Node.js/TypeScript)
+- [MongoDB](https://github.com/vallauri-ict/tpsi-playground-Giada-Valinotto-1/tree/main/MongoDB)
     
 
 # Description
