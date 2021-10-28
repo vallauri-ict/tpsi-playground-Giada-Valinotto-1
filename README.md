@@ -4,6 +4,9 @@
 
 :school: I.I.S. G. Vallauri, Fossano
 
+
+![image](https://user-images.githubusercontent.com/62563624/139274082-d3a35c5a-eb6f-47c7-97e1-40948ac97320.png)
+
 --------------------------------------------------------
 
 | :it:      | :uk: |
@@ -39,3 +42,4 @@ of the technologies analyzed. </p>
 - Node.js
     - [JavaScript](https://github.com/vallauri-ict/tpsi-playground-Giada-Valinotto-1/tree/main/Node.js/JavaScript)
     - [TypeScript](https://github.com/vallauri-ict/tpsi-playground-Giada-Valinotto-1/tree/main/Node.js/TypeScript)
+- [MongoDB](https://github.com/vallauri-ict/tpsi-playground-Giada-Valinotto-1/tree/main/MongoDB)
