@@ -1,4 +1,4 @@
-# ESERCIZIO 06 - NEWS
+# ESERCIZIO 07 - WEB RADIOS
 
 È possibile trovare una guida alla realizzazione del progetto [qui]()
 
