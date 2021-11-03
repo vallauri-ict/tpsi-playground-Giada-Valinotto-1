@@ -1,78 +1,98 @@
-import * as http from "http";
-import * as _mongodb from "mongodb";
-import HEADERS from "./headers.json";
-const _mongoClient = _mongodb.MongoClient;
-
-// due modelli di import export:
-//  - es5 (commonjs) -> require per le export
-//  - es6 -> import per le export, require() è reso disponibile grazie a types/node
-
+import * as _http from "http"
 import { Dispatcher } from "./dispatcher";
+import HEADERS from "./headers.json";
+import * as _mongodb from "mongodb";
+const mongoClient = _mongodb.MongoClient;
+const CONNECTIONSTRING = "mongodb://127.0.0.1:27017";
 
-const dispatcher:Dispatcher = new Dispatcher();
+/* Server HTTP
+const port : number = 1337; // node js
+const dispatcher : Dispatcher = new Dispatcher();
 
-const PORT:number = 1337; //La porta rimane 1337
-                          //Sarà l'applicazione Node a prende i dati da MongoDB
+const server = _http.createServer(function(req,res){
+    dispatcher.dispatch(req,res);
+})
+server.listen(port);
+console.log("server in ascolto sulla porta: " + port);
+*/
 
-const server = http.createServer((req:any, res:any) => {
-    dispatcher.dispatch(req, res);
+// Inserimento di un nuovo record
+mongoClient.connect(CONNECTIONSTRING,function(err,client){
+    if(!err){
+        let db = client.db("5B_Studenti");
+        let collection = db.collection("Studenti");
+        let student = {"nome":"Giada","hobbies":["nuoto","padel"],"cognome":"Valinotto","residenza":{"citta":"Genola","provincia":"CN","CAP":"12045"},"indirizzo":"Informatica","sezione":"B","lavoratore":false};
+        collection.insertOne(student,function(err,data){
+            if(!err){
+                console.log("INSERT",data);
+            }
+            else{
+                console.log("Errore esecuzione query " + err.message);
+            }
+            client.close();
+        });
+    }
+    else{
+        console.log("Errore nella connessione al DB " + err.message);
+    }
 });
 
-server.listen(PORT);
-
-console.log("Server in ascolto sulla porta " + PORT);
-
-//Node.js può lavorare sia come web server che come utility.
-//Per un semplice esempio, uutilizziamo un'utility.
-
-
-
-/*********** INSERIMENTO DI UN NUOVO RECORD ************/
-_mongoClient.connect("mongodb://127.0.0.1:27017",function(err,client){ 
-// console.log(err); -> Se error è undefined, non si sono verificati errori
-if(!err){ 
-    let db = client.db("5b_Studenti"); //client è l'oggetto che punta al DB
-    let collection = db.collection("Studenti"); 
-    let student = {"nome":"Bianca","cognome":"Velardi","hobbies":["cheerleading","gaming"],"indirizzo":"informatica","sezione":"B","lavoratore":false, "residenza":{"citta":"ALlba", "provincia":"Cuneo"}};
-    collection.insertOne(student, function(err,data){
-        if(!err)
-        {
-            console.log(data);
-        }
-        else
-        {
-            console.log("Record non aggiunto: " + err.message);
-        }
-        client.close();
-    }); 
-}
-else
-{
-    console.log("Errore nella connessione al database: "+ err.message);
-}
-});
-/*********** MODELLO DI ACCESSO AL DATABASE ************/
-
-_mongoClient.connect("mongodb://127.0.0.1:27017",function(err,client){ 
-// console.log(err); -> Se error è undefined, non si sono verificati errori
-if(!err){ 
-    let db = client.db("5b_Studenti"); //client è l'oggetto che punta al DB
-    let collection = db.collection("Studenti"); 
-    collection.find().toArray(function(err, data){//prendo tutti gli elementi e li converto in array enumerativo
-        if(!err)
-        {
-            console.log(data);
-        }
-        else
-        {
-            console.log("Errore esecuzione query: " + err.message);
-        }
-        client.close();
-    }); 
-}
-else
-{
-    console.log("Errore nella connessione al database: "+ err.message);
-}
+// Modello di accesso al database
+mongoClient.connect(CONNECTIONSTRING,function(err,client){
+    if(!err){
+        let db = client.db("5B_Studenti");
+        let collection = db.collection("Studenti");
+        collection.find().toArray(function(err,data){
+            if(!err){
+                console.log("FIND",data);
+            }
+            else{
+                console.log("Errore esecuzione query " + err.message);
+            }
+            client.close();
+        });
+    }
+    else{
+        console.log("Errore nella connessione al DB " + err.message);
+    }
 });
 
+// Update di un record
+mongoClient.connect(CONNECTIONSTRING,function(err,client){
+    if(!err){
+        let db = client.db("5B_Studenti");
+        let collection = db.collection("Studenti");
+        collection.updateOne({"nome":"Fabio"},{$set:{"residenza":"Fossano"}},function(err,data){
+            if(!err){
+                console.log("UPDATEONE",data);
+            }
+            else{
+                console.log("Errore esecuzione query " + err.message);
+            }
+            client.close();
+        });
+    }
+    else{
+        console.log("Errore nella connessione al DB " + err.message);
+    }
+});
+
+// Delete di un record
+mongoClient.connect(CONNECTIONSTRING,function(err,client){
+    if(!err){
+        let db = client.db("5B_Studenti");
+        let collection = db.collection("Studenti");
+        collection.deleteMany({"residenza":"Fossano"},function(err,data){
+            if(!err){
+                console.log("DELETE",data);
+            }
+            else{
+                console.log("Errore esecuzione query " + err.message);
+            }
+            client.close();
+        });
+    }
+    else{
+        console.log("Errore nella connessione al DB " + err.message);
+    }
+});
