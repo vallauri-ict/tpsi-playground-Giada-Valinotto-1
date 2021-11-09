@@ -371,19 +371,22 @@ mongoClient.connect(CONNECTIONSTRING, function (err, client) {
 });
 
 //query 17
-mongoClient.connect(CONNECTIONSTRING, function (err, client) {
-    if (!err) {
+mongoClient.connect(CONNECTIONSTRING,function(err,client){
+    if(!err){
         let db = client.db(DBNAME);
-        let collection = db.collection("Unicorns");
-        collection.updateOne({"name":"Aurora"},{"$addToSet":{"loves":"carrots"}} (err, data) => {
-            if (!err) {
-                console.log("QUERY 14: ", data);
-            } else {
-                console.error("Errore esecuzione query: " + err.message);
+        let collection = db.collection("unicorns");
+        collection.updateOne({"name":"Aurora"},{"$addToSet":{"loves":"carrot"},"$inc":{weight:10}},function(err,data){
+            if(!err)
+            {
+                console.log("Query 17",data);
+            }
+            else{
+                console.log("Errore esecuzione query " + err.message);
             }
             client.close();
         });
-    } else {
-        console.error("Errore nella connessione al database: " + err.message);
+    }
+    else{
+        console.log("Errore nella connessione al DB " + err.message);
     }
 });
