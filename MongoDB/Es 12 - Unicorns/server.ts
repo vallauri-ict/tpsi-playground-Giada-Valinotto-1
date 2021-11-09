@@ -295,3 +295,95 @@ mongoClient.connect(CONNECTIONSTRING, function (err, client) {
         console.error("Errore nella connessione al database: " + err.message);
     }
 });
+
+// query 14
+//distinct è un'alternativa a find la cui utilità è analoga al distinct SQL
+//è molto leggero e permette la restituzione di un unico campo
+//restituisce un vettore di stringhe senza aggiunta di .ToArray 
+mongoClient.connect(CONNECTIONSTRING, function (err, client) {
+    if (!err) {
+        let db = client.db(DBNAME);
+        let collection = db.collection("Unicorns");
+        collection.distinct("loves", {"gender":"f"}, (err, data) => {
+            if (!err) {
+                console.log("QUERY 14: ", data);
+            } else {
+                console.error("Errore esecuzione query: " + err.message);
+            }
+            client.close();
+        });
+    } else {
+        console.error("Errore nella connessione al database: " + err.message);
+    }
+});
+
+//query 15
+//le query sequenziali vanno eseguite una nella 
+mongoClient.connect(CONNECTIONSTRING, function (err, client) {
+    if (!err) {
+        let db = client.db(DBNAME);
+        let collection = db.collection("Unicorns");
+        collection.insertOne({"name":"Deto", "gender":"m", "loves":["apple","lemon"]}, (err, data) => {
+            if (!err) {
+                console.log("QUERY 15: ", data);
+                //eliminazione unicorno
+                collection.deleteMany({"name":"Deto"}, (err,data)=> 
+                {
+                    if(!err)
+                    {
+                        console.log("QUERY 15B", data)
+                    }
+                    else
+                    {
+                        console.log("Errore nell'esecuzione della query");
+                    }
+                    client.close(); //NB: la connessione va chiusa nella query più interna
+                });
+            } else {
+                console.error("Errore esecuzione query: " + err.message);
+            }
+        });
+    } else {
+        console.error("Errore nella connessione al database: " + err.message);
+    }
+});
+
+//query 16
+//metodo UPDATE (uodateOne e updateMany)
+//Se il campo vampires non esiste lo crea e lo setta ad 1
+//{"upsert":true} crea automaticamente il record Pilot se non viene trovato e setta vampires a 1
+// di default non fa nulla
+mongoClient.connect(CONNECTIONSTRING, function (err, client) {
+    if (!err) {
+        let db = client.db(DBNAME);
+        let collection = db.collection("Unicorns");
+        collection.updateOne({"name":"Pilot"},{"$inc":{"vampires":1},},{"upsert":true}, (err, data) => { 
+            if (!err) {
+                console.log("QUERY 16: ", data);
+            } else {
+                console.error("Errore esecuzione query: " + err.message);
+            }
+            client.close();
+        });
+    } else {
+        console.error("Errore nella connessione al database: " + err.message);
+    }
+});
+
+//query 17
+mongoClient.connect(CONNECTIONSTRING, function (err, client) {
+    if (!err) {
+        let db = client.db(DBNAME);
+        let collection = db.collection("Unicorns");
+        collection.updateOne({"name":"Aurora"},{"$addToSet":{"loves":"carrots"}} (err, data) => {
+            if (!err) {
+                console.log("QUERY 14: ", data);
+            } else {
+                console.error("Errore esecuzione query: " + err.message);
+            }
+            client.close();
+        });
+    } else {
+        console.error("Errore nella connessione al database: " + err.message);
+    }
+});
