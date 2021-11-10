@@ -378,7 +378,7 @@ mongoClient.connect(CONNECTIONSTRING,function(err,client){
         collection.updateOne({"name":"Aurora"},{"$addToSet":{"loves":"carrot"},"$inc":{weight:10}},function(err,data){
             if(!err)
             {
-                console.log("Query 17",data);
+                console.log("QUERY 17",data);
             }
             else{
                 console.log("Errore esecuzione query " + err.message);
@@ -388,5 +388,101 @@ mongoClient.connect(CONNECTIONSTRING,function(err,client){
     }
     else{
         console.log("Errore nella connessione al DB " + err.message);
+    }
+});
+
+//query 18
+//per la cereazione se il record non esiste si usa il terzo parametro UPSERT
+mongoClient.connect(CONNECTIONSTRING, function (err, client) {
+    if (!err) {
+        let db = client.db(DBNAME);
+        let collection = db.collection("Unicorns");
+        collection.updateOne({"name":"Pluto"},{"$inc":{"vampires":1},},{"upsert":true}, (err, data) => { 
+            if (!err) {
+                console.log("QUERY 18: ", data);
+            } else {
+                console.error("Errore esecuzione query: " + err.message);
+            }
+            client.close();
+        });
+    } else {
+        console.error("Errore nella connessione al database: " + err.message);
+    }
+});
+
+//query 19
+// uso exists per verificare l'esistenza di un campo
+mongoClient.connect(CONNECTIONSTRING, function (err, client) {
+    if (!err) {
+        let db = client.db(DBNAME);
+        let collection = db.collection("Unicorns");
+        collection.updateMany({vaccinated: {"$exists": false}}, {"$set":{"vaccinated":true}}, (err, data) => {
+            if (!err) {
+                console.log("QUERY 19: ", data);
+            } else {
+                console.error("Errore esecuzione query: " + err.message);
+            }
+            client.close();
+        });
+    } else {
+        console.error("Errore nella connessione al database: " + err.message);
+    }
+});
+
+//query 20
+mongoClient.connect(CONNECTIONSTRING, function (err, client) {
+    if (!err) {
+        let db = client.db(DBNAME);
+        let collection = db.collection("Unicorns");
+        collection.deleteMany({"loves": {"$all":['grape','carrot']}}, (err, data) => {
+            if (!err) {
+                console.log("QUERY 20: ", data);
+            } else {
+                console.error("Errore esecuzione query: " + err.message);
+            }
+            client.close();
+        });
+    } else {
+        console.error("Errore nella connessione al database: " + err.message);
+    }
+});
+
+//query 21
+//faccio un ordinamento decrescente sul campo vampires e prendo solo il primo
+//il findOne non accetta in coda il .project -> si rimedia con projection inserito come parametro -> REF QUERY 13
+mongoClient.connect(CONNECTIONSTRING, function (err, client) {
+    if (!err) {
+        let db = client.db(DBNAME);
+        let collection = db.collection("Unicorns");
+        collection.find({"gender":"f"}).sort({"vampires":-1}).limit(1).project({"name":1, "vampires":1, "_id":0}).toArray((err, data) => { //find() deve essere il primo, ToArray() l'ultimo
+            if (!err) {
+                console.log("QUERY 21: ", data);
+            } else {
+                console.error("Errore esecuzione query: " + err.message);
+            }
+            client.close();
+        });
+    } else {
+        console.error("Errore nella connessione al database: " + err.message);
+    }
+});
+
+//query 22
+//sostituire un record necessita del medoto replace
+//replaceOne cancella tutti i campi del record tranne id, dunque vanno re-inseriti tutti i campi da mantenere
+mongoClient.connect(CONNECTIONSTRING, function (err, client) {
+    if (!err) {
+        let db = client.db(DBNAME);
+        let collection = db.collection("Unicorns");
+        collection.replaceOne({"name":"Pluto"},{"name":"Pluto","loves":["apple","watermelon","lemon","carrot"],"residenza":"Fossano"},(err, data) => {
+            if (!err) {
+                console.log("QUERY 22: ", data);
+            } else {
+                console.error("Errore esecuzione query: " + err.message);
+            }
+            client.close();
+        });
+    } else {
+        console.error("Errore nella connessione al database: " + err.message);
     }
 });
