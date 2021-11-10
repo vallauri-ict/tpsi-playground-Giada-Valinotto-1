@@ -14,6 +14,7 @@ const CONNECTIONSTRING = "mongodb://127.0.0.1:27017";
 const DBNAME = "5B";
 
 // query 1
+//Trovare gli unicorni che hanno un peso compreso tra 700 e 800
 mongoClient.connect(CONNECTIONSTRING, function (err, client) {
     if (!err) {
         let db = client.db(DBNAME);
@@ -32,6 +33,7 @@ mongoClient.connect(CONNECTIONSTRING, function (err, client) {
 });
 
 // query 2
+//Trovare gli unicorni di genere maschile che amano l’uva e che hanno ucciso più di 60 vampiri
 mongoClient.connect(CONNECTIONSTRING, function (err, client) {
     if (!err) {
         let db = client.db(DBNAME);
@@ -58,6 +60,7 @@ mongoClient.connect(CONNECTIONSTRING, function (err, client) {
 });
 
 // query 3
+//Trovare gli unicorni di genere femminile o che pesano meno di 700 kg
 mongoClient.connect(CONNECTIONSTRING, function (err, client) {
     if (!err) {
         let db = client.db(DBNAME);
@@ -76,6 +79,7 @@ mongoClient.connect(CONNECTIONSTRING, function (err, client) {
 });
 
 // query 4
+//Trovare gli unicorni che amano (l’uva o le mele) e che hanno ucciso più di 60 vampiri
 mongoClient.connect(CONNECTIONSTRING, function (err, client) {
     if (!err) {
         let db = client.db(DBNAME);
@@ -94,6 +98,7 @@ mongoClient.connect(CONNECTIONSTRING, function (err, client) {
 });
 
 // query 5
+//Trovare gli unicorni che amano (l’uva e il watermelon) e che hanno ucciso più di 60 vampiri
 mongoClient.connect(CONNECTIONSTRING, function (err, client) {
     if (!err) {
         let db = client.db(DBNAME);
@@ -112,6 +117,7 @@ mongoClient.connect(CONNECTIONSTRING, function (err, client) {
 });
 
 // query 6 A
+//Trovare gli unicorni che hanno il pelo marrone oppure grigio
 mongoClient.connect(CONNECTIONSTRING, function (err, client) {
     if (!err) {
         let db = client.db(DBNAME);
@@ -130,6 +136,7 @@ mongoClient.connect(CONNECTIONSTRING, function (err, client) {
 });
 
 // query 6 B
+//Trovare gli unicorni che hanno il pelo marrone oppure grigio
 mongoClient.connect(CONNECTIONSTRING, function (err, client) {
     if (!err) {
         let db = client.db(DBNAME);
@@ -148,6 +155,7 @@ mongoClient.connect(CONNECTIONSTRING, function (err, client) {
 });
 
 // query 7
+// Trovare gli unicorni non vaccinati
 mongoClient.connect(CONNECTIONSTRING, function (err, client) {
     if (!err) {
         let db = client.db(DBNAME);
@@ -166,6 +174,7 @@ mongoClient.connect(CONNECTIONSTRING, function (err, client) {
 });
 
 // query 9
+// Trovare gli unicorni di genere femminile il cui nome inizia con la lettera A
 mongoClient.connect(CONNECTIONSTRING, function (err, client) {
     if (!err) {
         let db = client.db(DBNAME);
@@ -185,6 +194,7 @@ mongoClient.connect(CONNECTIONSTRING, function (err, client) {
 });
 
 // query 10
+//Trovare un unicorno sulla base dell’ID
 mongoClient.connect(CONNECTIONSTRING, function (err, client) {
     if (!err) {
         let db = client.db(DBNAME);
@@ -203,6 +213,7 @@ mongoClient.connect(CONNECTIONSTRING, function (err, client) {
 });
 
 // query 11 A
+//Visualizzare nome e vampiri uccisi per tutti gli unicorni di genere maschile
 mongoClient.connect(CONNECTIONSTRING, function (err, client) {
     if (!err) {
         let db = client.db(DBNAME);
@@ -221,6 +232,7 @@ mongoClient.connect(CONNECTIONSTRING, function (err, client) {
 });
 
 // query 11 B
+// Visualizzare i dati precedenti in modo ordinato sul n. decrescente di vampiri uccisi
 mongoClient.connect(CONNECTIONSTRING, function (err, client) {
     if (!err) {
         let db = client.db(DBNAME);
@@ -241,6 +253,7 @@ mongoClient.connect(CONNECTIONSTRING, function (err, client) {
 });
 
 // query 11 C
+// Rispetto al recordset precedente, visualizzare soltanto i primi 3 record
 mongoClient.connect(CONNECTIONSTRING, function (err, client) {
     if (!err) {
         let db = client.db(DBNAME);
@@ -261,6 +274,7 @@ mongoClient.connect(CONNECTIONSTRING, function (err, client) {
 });
 
 // query 12
+// Contare il numero di vampiri che pesano più di 500 kg
 mongoClient.connect(CONNECTIONSTRING, function (err, client) {
     if (!err) {
         let db = client.db(DBNAME);
@@ -279,6 +293,7 @@ mongoClient.connect(CONNECTIONSTRING, function (err, client) {
 });
 
 // query 13
+// Visualizzare peso e pelo dell’unicorno Aurora (findOne)
 mongoClient.connect(CONNECTIONSTRING, function (err, client) {
     if (!err) {
         let db = client.db(DBNAME);
@@ -297,6 +312,7 @@ mongoClient.connect(CONNECTIONSTRING, function (err, client) {
 });
 
 // query 14
+//Visualizzare i frutti amati dagli unicorni di genere femminile (ogni frutto una sola volta)
 //distinct è un'alternativa a find la cui utilità è analoga al distinct SQL
 //è molto leggero e permette la restituzione di un unico campo
 //restituisce un vettore di stringhe senza aggiunta di .ToArray 
@@ -318,6 +334,7 @@ mongoClient.connect(CONNECTIONSTRING, function (err, client) {
 });
 
 //query 15
+//Inserire un nuovo unicorno e, al termine dell’inserimento, cancellarlo nella stessa query
 //le query sequenziali vanno eseguite una nella 
 mongoClient.connect(CONNECTIONSTRING, function (err, client) {
     if (!err) {
@@ -349,6 +366,7 @@ mongoClient.connect(CONNECTIONSTRING, function (err, client) {
 });
 
 //query 16
+//Incrementare di 1 il numero dei vampiri uccisi da Pilot
 //metodo UPDATE (uodateOne e updateMany)
 //Se il campo vampires non esiste lo crea e lo setta ad 1
 //{"upsert":true} crea automaticamente il record Pilot se non viene trovato e setta vampires a 1
@@ -371,6 +389,7 @@ mongoClient.connect(CONNECTIONSTRING, function (err, client) {
 });
 
 //query 17
+//Aggiungere che l’unicorno Aurora ama anche le carote ed il suo peso è aumentato di 10kg
 mongoClient.connect(CONNECTIONSTRING,function(err,client){
     if(!err){
         let db = client.db(DBNAME);
@@ -392,6 +411,7 @@ mongoClient.connect(CONNECTIONSTRING,function(err,client){
 });
 
 //query 18
+//Incrementare di 1 il numero di vampiri uccisi dall’unicorno Pluto. Se il record non esiste crearlo
 //per la cereazione se il record non esiste si usa il terzo parametro UPSERT
 mongoClient.connect(CONNECTIONSTRING, function (err, client) {
     if (!err) {
@@ -411,6 +431,7 @@ mongoClient.connect(CONNECTIONSTRING, function (err, client) {
 });
 
 //query 19
+// Aggiungere il campo vaccinated=false a tutti gli unicorni che non dispongono del campo vaccinated
 // uso exists per verificare l'esistenza di un campo
 mongoClient.connect(CONNECTIONSTRING, function (err, client) {
     if (!err) {
@@ -430,6 +451,7 @@ mongoClient.connect(CONNECTIONSTRING, function (err, client) {
 });
 
 //query 20
+//Rimuovere gli unicorni che amano sia l’uva sia le carote
 mongoClient.connect(CONNECTIONSTRING, function (err, client) {
     if (!err) {
         let db = client.db(DBNAME);
@@ -448,6 +470,7 @@ mongoClient.connect(CONNECTIONSTRING, function (err, client) {
 });
 
 //query 21
+//Trovare l’unicorno femmina che ha ucciso il maggior numero di vampiri. Restituire nome e numero di vampiri uccisi
 //faccio un ordinamento decrescente sul campo vampires e prendo solo il primo
 //il findOne non accetta in coda il .project -> si rimedia con projection inserito come parametro -> REF QUERY 13
 mongoClient.connect(CONNECTIONSTRING, function (err, client) {
@@ -468,6 +491,7 @@ mongoClient.connect(CONNECTIONSTRING, function (err, client) {
 });
 
 //query 22
+//Sostituire completamente il record dell’unicorno Pluto con un nuovo record
 //sostituire un record necessita del medoto replace
 //replaceOne cancella tutti i campi del record tranne id, dunque vanno re-inseriti tutti i campi da mantenere
 mongoClient.connect(CONNECTIONSTRING, function (err, client) {
