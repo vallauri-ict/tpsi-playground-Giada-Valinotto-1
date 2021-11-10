@@ -486,3 +486,25 @@ mongoClient.connect(CONNECTIONSTRING, function (err, client) {
         console.error("Errore nella connessione al database: " + err.message);
     }
 });
+
+// Query 1 con uso delle promise 
+mongoClient.connect(CONNECTIONSTRING, (err, client) => {
+    if (!err) {
+      let db = client.db(DBNAME)
+      let collection = db.collection('Unicorns')
+      let req = collection.find({ weight: { $lte: 800, $gte: 700 } }).toArray()
+  
+      req.then((data) => {
+        console.log('Query 1B', data)
+      })
+      req.catch((err) => {
+        console.log('Errore esecuzione query: ' + err.message)
+      })
+  
+      req.finally(() => {
+        client.close()
+      })
+    } else {
+      console.log('Errore connessione al db: ' + err.message)
+    }
+  })
