@@ -64,4 +64,48 @@ else
 });
 ```
 
+### Modifica di dati sul database
+```javascript
+mongoClient.connect(CONNECTIONSTRING,function(err,client){
+    if(!err){
+        let db = client.db("5B_Studenti");
+        let collection = db.collection("Studenti");
+        collection.updateOne({"nome":"Fabio"},{$set:{"residenza":"Fossano"}},function(err,data){
+            if(!err){
+                console.log("UPDATEONE",data);
+            }
+            else{
+                console.log("Errore esecuzione query " + err.message);
+            }
+            client.close();
+        });
+    }
+    else{
+        console.log("Errore nella connessione al DB " + err.message);
+    }
+});
+```
+
+### Eliminazione di dati sul database
+```javascript
+mongoClient.connect(CONNECTIONSTRING,function(err,client){
+    if(!err){
+        let db = client.db("5B_Studenti");
+        let collection = db.collection("Studenti");
+        collection.deleteMany({"residenza":"Fossano"},function(err,data){
+            if(!err){
+                console.log("DELETE",data);
+            }
+            else{
+                console.log("Errore esecuzione query " + err.message);
+            }
+            client.close();
+        });
+    }
+    else{
+        console.log("Errore nella connessione al DB " + err.message);
+    }
+});
+```
+
 _stud. Giada Valinotto, 5B Informatica 2021/2022_
