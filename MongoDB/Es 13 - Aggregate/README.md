@@ -34,13 +34,44 @@ può essere richiamata una seconda volta per raggruppare ulteriormente i gruppi 
 ed eventualmente filtrati tramite $match e $project.
 
 ### Database
-L'esercizio si regge sul database orders:
+L'esercizio si regge sui seguenti database:
+- ORDERS
 ```json
 [ {"_id": 1,  "cust_id": "abc1",  "status": "A",  "amount": 50,  "qta":30,  "nDettagli" : [7, 12, 11]  },
   {"_id": 2,  "cust_id": "xyz1",  "status": "A",  "amount": 100, "qta":46,  "nDettagli" : [10, 16, 20]  },
   {"_id": 3,  "cust_id": "xyz1",  "status": "D",  "amount": 25,  "qta":70,  "nDettagli" : [30, 20, 20]  },
   {"_id": 4,  "cust_id": "xyz1",  "status": "D",  "amount": 125, "qta":20,  "nDettagli"  : [5, 10, 5]  },
   {"_id": 5,  "cust_id": "abc1",  "status": "A",  "amount": 25,  "qta":32,  "nDettagli" : [10, 10, 12]  }
+]
+```
+- STUDENTS
+```json
+[ {"_id": 1, "quizzes": [10,6,7], "labs": [5,8], "midterm": 75, "final": 80 },
+  {"_id": 2, "quizzes": [9,10 ],  "labs": [8,8], "midterm": 80, "final": 95 },
+  {"_id": 3, "quizzes": [4,5,5],  "labs": [6,5], "midterm": 70, "final": 78 }
+]
+```
+- QUIZZES
+```json
+[ {"_id": 1, "quizzes": [10,6,7], "labs": [5,8], "midterm": 75, "final": 80 },
+  {"_id": 2, "quizzes": [9,10 ],  "labs": [8,8], "midterm": 80, "final": 95 },
+  {"_id": 3, "quizzes": [4,5,5],  "labs": [6,5], "midterm": 70, "final": 78 }
+]
+```
+- UNICORNS
+ ```json
+ [ {"name":"Horny",  "dob":"1992-02-13", "loves": ["carrot","papaya"], "weight": 600, "gender": "m", "vampires":63, "hair":"grey"},
+  {"name":"Aurora", "dob":"1991-01-24", "loves": ["carrot","grape"], "weight": 450, "gender": "f", "vampires": 43, "hair":"blonde"},
+  {"name":"Unico",  "dob":"1973-01-09", "loves": ["energon","strawberry"], "weight": 984, "gender": "m", "vampires": 182, "hair":"brown"},
+  {"name":"Roodles","dob":"1979-07-18", "loves": ["apple"], "weight": 575, "gender": "m", "vampires": 99, "hair":"brown"},
+  {"name":"Solnara","dob":"1985-06-04", "loves": ["apple","carrot","chocolate"], "weight":550, "gender":"f", "vampires":80, "hair":"grey"},
+  {"name":"Ayna",   "dob":"1998-02-07", "loves": ["strawberry","lemon"], "weight":733, "gender":"f", "vampires": 40, "hair":"brown"},
+  {"name":"Kenny",  "dob":"1997-06-01", "loves": ["grape","lemon"], "weight": 690, "gender": "m", "vampires": 39, "hair":"grey"},
+  {"name":"Raleigh","dob":"2005-04-03", "loves": ["apple", "sugar"], "weight": 421, "gender": "m", "vampires": 2, "hair":"brown"},
+  {"name":"Leia",   "dob":"2001-09-08", "loves": ["apple", "watermelon"], "weight":601, "gender":"f", "vampires": 33, "hair":"blonde"},
+  {"name":"Pilot",  "dob":"1997-02-01", "loves": ["apple", "watermelon"], "weight":650, "gender":"m", "vampires": 54, "hair":"brown"},
+  {"name":"Nimue",  "dob":"1999-11-20", "loves": ["grape", "energon"], "weight": 540, "gender": "f", "hair":"blonde", "vaccinated":true},
+  {"name":"Dunx",   "dob":"1976-06-18", "loves": ["grape", "watermelon"], "weight":704, "gender":"m", "vampires":165, "hair":"grey"}
 ]
 ```
 _stud. Valinotto Giada, classe 5B Informatica 2021/2022_
