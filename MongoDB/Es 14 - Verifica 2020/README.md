@@ -3,7 +3,7 @@
  Completamento della verifica somministrata lo scorso anno scolastico al fine di verificare l'acquisizione delle competenze necessarie ad attestare la comprenisone dell'argomento.
  
 ## Realizzazione dell'esercizio e Database
-La traccia sulla base della quale è stato relizzato l'esercizio è reperibile qui 
+La traccia sulla base della quale è stato relizzato l'esercizio è reperibile [qui](https://github.com/vallauri-ict/tpsi-playground-Giada-Valinotto-1/blob/main/MongoDB/Es%2014%20-%20Verifica%202020/Ese%2014%20Verifica%202020%20vallauri.pdf) 
 
 L'intero esercizio si regge sul database vallauri, così strutturato:
 ```javascript
