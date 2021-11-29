@@ -1,5 +1,4 @@
 "use strict"
-
 import * as http from "http";
 import * as fs from "fs";
 import HEADERS from "./headers.json";
@@ -10,7 +9,8 @@ const mongoClient = mongodb.MongoClient;
 
 const dispatcher: Dispatcher = new Dispatcher();
 
-const CONNECTIONSTRING = "mongodb://127.0.0.1:27017";
+// const CONNECTIONSTRING = "mongodb://127.0.0.1:27017";
+const CONNECTIONSTRING = "mongodb+srv://ValinottoGiada:Valinotto1208@cluster-valinotto.mkzyu.mongodb.net/test";
 const DBNAME = "5B";
 
 // query 1
@@ -18,7 +18,7 @@ const DBNAME = "5B";
 mongoClient.connect(CONNECTIONSTRING, function (err, client) {
     if (!err) {
         let db = client.db(DBNAME);
-        let collection = db.collection("Unicorns");
+        let collection = db.collection("unicorns");
         collection.find({"weight": {"$lte": 800, "$gte": 700}}).toArray((err, data) => {
             if (!err) {
                 console.log("QUERY 1: ", data);
@@ -37,7 +37,7 @@ mongoClient.connect(CONNECTIONSTRING, function (err, client) {
 mongoClient.connect(CONNECTIONSTRING, function (err, client) {
     if (!err) {
         let db = client.db(DBNAME);
-        let collection = db.collection("Unicorns");
+        let collection = db.collection("unicorns");
         // se volessimo cercare l'unicorno che vuole esattamente olo l'uva
         // (o anche altra roba che aggiungiamo nel vettore) usiamo "loves": ["grape"]
         
@@ -64,7 +64,7 @@ mongoClient.connect(CONNECTIONSTRING, function (err, client) {
 mongoClient.connect(CONNECTIONSTRING, function (err, client) {
     if (!err) {
         let db = client.db(DBNAME);
-        let collection = db.collection("Unicorns");
+        let collection = db.collection("unicorns");
         collection.find({"$or": [{"gender": "f"}, {"weight": {"$lte": 700}}]}).toArray((err, data) => {
             if (!err) {
                 console.log("QUERY 3: ", data);
@@ -83,7 +83,7 @@ mongoClient.connect(CONNECTIONSTRING, function (err, client) {
 mongoClient.connect(CONNECTIONSTRING, function (err, client) {
     if (!err) {
         let db = client.db(DBNAME);
-        let collection = db.collection("Unicorns");
+        let collection = db.collection("unicorns");
         collection.find({"$and": [{"loves": {"$in": ["apple", "grape"]}}, {"vampires": {"$gte": 60}}]}).toArray((err, data) => {
             if (!err) {
                 console.log("QUERY 4: ", data);
@@ -102,7 +102,7 @@ mongoClient.connect(CONNECTIONSTRING, function (err, client) {
 mongoClient.connect(CONNECTIONSTRING, function (err, client) {
     if (!err) {
         let db = client.db(DBNAME);
-        let collection = db.collection("Unicorns");
+        let collection = db.collection("unicorns");
         collection.find({"loves": {"$all": ["watermelon", "grape"]}}).toArray((err, data) => {
             if (!err) {
                 console.log("QUERY 5: ", data);
@@ -121,7 +121,7 @@ mongoClient.connect(CONNECTIONSTRING, function (err, client) {
 mongoClient.connect(CONNECTIONSTRING, function (err, client) {
     if (!err) {
         let db = client.db(DBNAME);
-        let collection = db.collection("Unicorns");
+        let collection = db.collection("unicorns");
         collection.find({"$or": [{"hair": "brown"}, {"hair": "grey"}]}).toArray((err, data) => {
             if (!err) {
                 console.log("QUERY 6 A: ", data);
@@ -140,7 +140,7 @@ mongoClient.connect(CONNECTIONSTRING, function (err, client) {
 mongoClient.connect(CONNECTIONSTRING, function (err, client) {
     if (!err) {
         let db = client.db(DBNAME);
-        let collection = db.collection("Unicorns");
+        let collection = db.collection("unicorns");
         collection.find({"hair": {"$in": ["grey", "brown"]}}).toArray((err, data) => {
             if (!err) {
                 console.log("QUERY 6 B: ", data);
@@ -159,7 +159,7 @@ mongoClient.connect(CONNECTIONSTRING, function (err, client) {
 mongoClient.connect(CONNECTIONSTRING, function (err, client) {
     if (!err) {
         let db = client.db(DBNAME);
-        let collection = db.collection("Unicorns");
+        let collection = db.collection("unicorns");
         collection.find({"$and": [{"vaccinated": {"$exists": true}}, {"vaccinated": true}]}).toArray((err, data) => {
             if (!err) {
                 console.log("QUERY 7: ", data);
@@ -178,7 +178,7 @@ mongoClient.connect(CONNECTIONSTRING, function (err, client) {
 mongoClient.connect(CONNECTIONSTRING, function (err, client) {
     if (!err) {
         let db = client.db(DBNAME);
-        let collection = db.collection("Unicorns");
+        let collection = db.collection("unicorns");
         let regex = new RegExp("^A", "i");
         collection.find({"$and": [{"name": {"$regex": regex}}, {"gender": "f"}]}).toArray((err, data) => {
             if (!err) {
@@ -198,7 +198,7 @@ mongoClient.connect(CONNECTIONSTRING, function (err, client) {
 mongoClient.connect(CONNECTIONSTRING, function (err, client) {
     if (!err) {
         let db = client.db(DBNAME);
-        let collection = db.collection("Unicorns");
+        let collection = db.collection("unicorns");
         collection.find({"_id": new mongodb.ObjectId("61823ae5e294691b96e1ee96")}).toArray((err, data) => {
             if (!err) {
                 console.log("QUERY 10: ", data);
@@ -217,7 +217,7 @@ mongoClient.connect(CONNECTIONSTRING, function (err, client) {
 mongoClient.connect(CONNECTIONSTRING, function (err, client) {
     if (!err) {
         let db = client.db(DBNAME);
-        let collection = db.collection("Unicorns");
+        let collection = db.collection("unicorns");
         collection.find({"gender": "m"}).project({"name": 1, "vampires": 1, "_id": 0}).toArray((err, data) => {
             if (!err) {
                 console.log("QUERY 11 A: ", data);
@@ -236,7 +236,7 @@ mongoClient.connect(CONNECTIONSTRING, function (err, client) {
 mongoClient.connect(CONNECTIONSTRING, function (err, client) {
     if (!err) {
         let db = client.db(DBNAME);
-        let collection = db.collection("Unicorns");
+        let collection = db.collection("unicorns");
         // il secondo parametro del sort è chiamato in causa quando si trova
         // un parimerito nel primo
         collection.find({"gender": "m"}).project({"name": 1, "vampires": 1, "_id": 0}).sort({"vampires": -1, "name": 1}).toArray((err, data) => {
@@ -257,7 +257,7 @@ mongoClient.connect(CONNECTIONSTRING, function (err, client) {
 mongoClient.connect(CONNECTIONSTRING, function (err, client) {
     if (!err) {
         let db = client.db(DBNAME);
-        let collection = db.collection("Unicorns");
+        let collection = db.collection("unicorns");
         // il secondo parametro del sort è chiamato in causa quando si trova
         // un parimerito nel primo
         collection.find({"gender": "m"}).project({"name": 1, "vampires": 1, "_id": 0}).sort({"vampires": -1, "name": 1}).skip(1).limit(3).toArray((err, data) => {
@@ -278,7 +278,7 @@ mongoClient.connect(CONNECTIONSTRING, function (err, client) {
 mongoClient.connect(CONNECTIONSTRING, function (err, client) {
     if (!err) {
         let db = client.db(DBNAME);
-        let collection = db.collection("Unicorns");
+        let collection = db.collection("unicorns");
         collection.find({"weight": {"$gt": 500}}).count((err, data) => {
             if (!err) {
                 console.log("QUERY 12: ", data);
@@ -297,7 +297,7 @@ mongoClient.connect(CONNECTIONSTRING, function (err, client) {
 mongoClient.connect(CONNECTIONSTRING, function (err, client) {
     if (!err) {
         let db = client.db(DBNAME);
-        let collection = db.collection("Unicorns");
+        let collection = db.collection("unicorns");
         collection.findOne({"name": "Aurora"}, {"projection": {"hair": 1, "weight": 1}}, (err, data) => {
             if (!err) {
                 console.log("QUERY 13: ", data);
@@ -319,7 +319,7 @@ mongoClient.connect(CONNECTIONSTRING, function (err, client) {
 mongoClient.connect(CONNECTIONSTRING, function (err, client) {
     if (!err) {
         let db = client.db(DBNAME);
-        let collection = db.collection("Unicorns");
+        let collection = db.collection("unicorns");
         collection.distinct("loves", {"gender":"f"}, (err, data) => {
             if (!err) {
                 console.log("QUERY 14: ", data);
@@ -339,7 +339,7 @@ mongoClient.connect(CONNECTIONSTRING, function (err, client) {
 mongoClient.connect(CONNECTIONSTRING, function (err, client) {
     if (!err) {
         let db = client.db(DBNAME);
-        let collection = db.collection("Unicorns");
+        let collection = db.collection("unicorns");
         collection.insertOne({"name":"Deto", "gender":"m", "loves":["apple","lemon"]}, (err, data) => {
             if (!err) {
                 console.log("QUERY 15: ", data);
@@ -374,7 +374,7 @@ mongoClient.connect(CONNECTIONSTRING, function (err, client) {
 mongoClient.connect(CONNECTIONSTRING, function (err, client) {
     if (!err) {
         let db = client.db(DBNAME);
-        let collection = db.collection("Unicorns");
+        let collection = db.collection("unicorns");
         collection.updateOne({"name":"Pilot"},{"$inc":{"vampires":1},},{"upsert":true}, (err, data) => { 
             if (!err) {
                 console.log("QUERY 16: ", data);
@@ -416,7 +416,7 @@ mongoClient.connect(CONNECTIONSTRING,function(err,client){
 mongoClient.connect(CONNECTIONSTRING, function (err, client) {
     if (!err) {
         let db = client.db(DBNAME);
-        let collection = db.collection("Unicorns");
+        let collection = db.collection("unicorns");
         collection.updateOne({"name":"Pluto"},{"$inc":{"vampires":1},},{"upsert":true}, (err, data) => { 
             if (!err) {
                 console.log("QUERY 18: ", data);
@@ -436,7 +436,7 @@ mongoClient.connect(CONNECTIONSTRING, function (err, client) {
 mongoClient.connect(CONNECTIONSTRING, function (err, client) {
     if (!err) {
         let db = client.db(DBNAME);
-        let collection = db.collection("Unicorns");
+        let collection = db.collection("unicorns");
         collection.updateMany({vaccinated: {"$exists": false}}, {"$set":{"vaccinated":true}}, (err, data) => {
             if (!err) {
                 console.log("QUERY 19: ", data);
@@ -455,7 +455,7 @@ mongoClient.connect(CONNECTIONSTRING, function (err, client) {
 mongoClient.connect(CONNECTIONSTRING, function (err, client) {
     if (!err) {
         let db = client.db(DBNAME);
-        let collection = db.collection("Unicorns");
+        let collection = db.collection("unicorns");
         collection.deleteMany({"loves": {"$all":['grape','carrot']}}, (err, data) => {
             if (!err) {
                 console.log("QUERY 20: ", data);
@@ -476,7 +476,7 @@ mongoClient.connect(CONNECTIONSTRING, function (err, client) {
 mongoClient.connect(CONNECTIONSTRING, function (err, client) {
     if (!err) {
         let db = client.db(DBNAME);
-        let collection = db.collection("Unicorns");
+        let collection = db.collection("unicorns");
         collection.find({"gender":"f"}).sort({"vampires":-1}).limit(1).project({"name":1, "vampires":1, "_id":0}).toArray((err, data) => { //find() deve essere il primo, ToArray() l'ultimo
             if (!err) {
                 console.log("QUERY 21: ", data);
@@ -497,7 +497,7 @@ mongoClient.connect(CONNECTIONSTRING, function (err, client) {
 mongoClient.connect(CONNECTIONSTRING, function (err, client) {
     if (!err) {
         let db = client.db(DBNAME);
-        let collection = db.collection("Unicorns");
+        let collection = db.collection("unicorns");
         collection.replaceOne({"name":"Pluto"},{"name":"Pluto","loves":["apple","watermelon","lemon","carrot"],"residenza":"Fossano"},(err, data) => {
             if (!err) {
                 console.log("QUERY 22: ", data);
@@ -515,7 +515,7 @@ mongoClient.connect(CONNECTIONSTRING, function (err, client) {
 mongoClient.connect(CONNECTIONSTRING, (err, client) => {
     if (!err) {
       let db = client.db(DBNAME)
-      let collection = db.collection('Unicorns')
+      let collection = db.collection('unicorns')
       let req = collection.find({ weight: { $lte: 800, $gte: 700 } }).toArray()
   
       req.then((data) => {

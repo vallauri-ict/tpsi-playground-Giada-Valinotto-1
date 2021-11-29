@@ -1,0 +1,10 @@
+textarea{
+    width: 350px;
+    height: 120px;
+    margin-top: 20px;
+}
+#btnSalva{
+    width: 132px;
+    background-color: #0F0;
+    cursor: pointer;
+}
