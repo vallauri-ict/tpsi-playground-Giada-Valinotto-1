@@ -28,7 +28,8 @@ delle tecnologie analizzate. </p>
     - [JavaScript](https://github.com/vallauri-ict/tpsi-playground-Giada-Valinotto-1/tree/main/Node.js/JavaScript)
     -  [TypeScript](https://github.com/vallauri-ict/tpsi-playground-Giada-Valinotto-1/tree/main/Node.js/TypeScript)
 - [MongoDB](https://github.com/vallauri-ict/tpsi-playground-Giada-Valinotto-1/tree/main/MongoDB)
-    
+- [Express](https://github.com/vallauri-ict/tpsi-playground-Giada-Valinotto-1/tree/main/Express)
+
 
 # Description
 <p> The repository contains the collection of all the exercises for didactic purposes carried out during the school year 2021/2022 in the field of Technologies. </p>
