@@ -44,3 +44,4 @@ of the technologies analyzed. </p>
     - [JavaScript](https://github.com/vallauri-ict/tpsi-playground-Giada-Valinotto-1/tree/main/Node.js/JavaScript)
     - [TypeScript](https://github.com/vallauri-ict/tpsi-playground-Giada-Valinotto-1/tree/main/Node.js/TypeScript)
 - [MongoDB](https://github.com/vallauri-ict/tpsi-playground-Giada-Valinotto-1/tree/main/MongoDB)
+- [Express](https://github.com/vallauri-ict/tpsi-playground-Giada-Valinotto-1/tree/main/Express)
