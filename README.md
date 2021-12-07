@@ -30,7 +30,7 @@ delle tecnologie analizzate. </p>
 - [MongoDB](https://github.com/vallauri-ict/tpsi-playground-Giada-Valinotto-1/tree/main/MongoDB)
 - [Express](https://github.com/vallauri-ict/tpsi-playground-Giada-Valinotto-1/tree/main/Express)
 
-Per qualsiasi esigenza, contattare [Valinotto Giada](mailto:g.valinotto.0990@vallauri.edu?subject=[GitHub]%20TPSI%20Playground)
+Per qualsiasi esigenza, contattare [Valinotto Giada](mailto:g.valinotto.0990@vallauri.edu?subject=[GitHub]%20TPSI%20Playground).
 
 # Description
 <p> The repository contains the collection of all the exercises for didactic purposes carried out during the school year 2021/2022 in the field of Technologies. </p>
@@ -47,3 +47,7 @@ of the technologies analyzed. </p>
     - [TypeScript](https://github.com/vallauri-ict/tpsi-playground-Giada-Valinotto-1/tree/main/Node.js/TypeScript)
 - [MongoDB](https://github.com/vallauri-ict/tpsi-playground-Giada-Valinotto-1/tree/main/MongoDB)
 - [Express](https://github.com/vallauri-ict/tpsi-playground-Giada-Valinotto-1/tree/main/Express)
+
+For any requirement, please contact [Valinotto Giada](mailto:g.valinotto.0990@vallauri.edu?subject=[GitHub]%20TPSI%20Playground).
+
+_Stud. Valinotto Giada, 5BINF 2021/2022_
