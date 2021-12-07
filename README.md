@@ -2,7 +2,7 @@
 
 :mortar_board: Giada Valinotto, 5B INF 
 
-:school: I.I.S. G. Vallauri, Fossano
+:school: [I.I.S. G. Vallauri, Fossano](http://www.vallauri.edu/public/ita/pagina.asp)
 
 
 ![image](https://user-images.githubusercontent.com/62563624/139274082-d3a35c5a-eb6f-47c7-97e1-40948ac97320.png)
