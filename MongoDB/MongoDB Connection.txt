@@ -2,4 +2,4 @@ MongoDB:
 mongodb+srv://ValinottoGiada:Valinotto1208@cluster0.rrtmz.mongodb.net/test
 -----------------------------------------------------------------------
 NodeJS:
-mongodb+srv://ValinottoGiada:Valinotto1208@cluster0.rrtmz.mongodb.net/5B?retryWrites=true&w=majority
+const CONNECTION_STRING = "mongodb+srv://ValinottoGiada:Valinotto1208@cluster-valinotto.mkzyu.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";

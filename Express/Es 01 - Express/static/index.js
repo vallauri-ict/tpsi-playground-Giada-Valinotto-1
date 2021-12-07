@@ -1,17 +1,29 @@
-$(document).ready(function() {
-    $("#btnInvia").on("click", function() {
-        let request = inviaRichiesta("post", "/api/servizio1?id=5", {"nome":"pippo"});
-        request.fail(errore);
-        request.done(function(data) {
-            alert(JSON.stringify(data));
-        });
-    });
+"use strict";
 
-    $("#btnInvia2").on("click", function() {
-        let request = inviaRichiesta("get", "/api/servizio2", {"nome":"provaparametro"});
-        request.fail(errore);
-        request.done(function(data) {
-            alert(JSON.stringify(data));
-        });
-    });
+$(document).ready(function () {
+  $("#btn1").on("click",function(){
+    let request = inviaRichiesta("GET","/api/risorsa1",{"nome" : "Aurora"});
+    request.fail(errore);
+    request.done(function(data){
+      console.log(data);
+    })
+  });
+
+  $("#btn2").on("click",function(){
+    let request = inviaRichiesta("PATCH","/api/risorsa2",{"nome" : "Unico","vampiri" : 3});
+    request.fail(errore);
+    request.done(function(data){
+      console.log(data);
+    })
+  });
+
+  //passiamo i parametri direttamente nell risorsa
+  $("#btn3").on("click",function(){
+    let request = inviaRichiesta("GET","/api/risorsa3/m/brown");
+    request.fail(errore);
+    request.done(function(data){
+      console.log(data);
+    })
+  });
+
 });

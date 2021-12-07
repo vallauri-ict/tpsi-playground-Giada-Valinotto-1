@@ -2,7 +2,8 @@ function inviaRichiesta(method, url, parameters = {}) {
     let contentType;
     if (method.toUpperCase() == "GET") {
         contentType = "application/x-www-form-urlencoded; charset=UTF-8"
-    } else {
+    } 
+	else {
         contentType = "application/json; charset=utf-8"
         parameters = JSON.stringify(parameters);
     }
@@ -24,8 +25,6 @@ function errore(jqXHR, testStatus, strError) {
         alert("Connection refused or Server timeout");
     else if (jqXHR.status == 200)
         alert("Formato dei dati non corretto : " + jqXHR.responseText);
-    else if (jqXHR.status == 403) // forbidden
-        window.location.href = "login.html"
     else
         alert("Server Error: " + jqXHR.status + " - " + jqXHR.responseText);
 }
