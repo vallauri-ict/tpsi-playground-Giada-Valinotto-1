@@ -5,11 +5,12 @@ import * as body_parser from "body-parser";
 import { inherits } from "util";
 import HEADERS from "./headers.json";
 import * as mongodb from "mongodb";
+import  cors from "cors";
 
 const mongoClient = mongodb.MongoClient;
 const CONNECTION_STRING =
-  "mongodb+srv://ValinottoGiada:Valinotto1208@cluster-valinotto.mkzyu.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
-const DB_NAME = "unicorns";
+  "mongodb://admin:admin@cluster0-shard-00-00.zarz7.mongodb.net:27017,cluster0-shard-00-01.zarz7.mongodb.net:27017,cluster0-shard-00-02.zarz7.mongodb.net:27017/test?replicaSet=atlas-bgntwo-shard-0&ssl=true&authSource=admin";
+const DB_NAME = "recipeBook";
 
 
 let port : number = 1337;
@@ -63,6 +64,24 @@ app.use("/", function(req, res, next){
     next();
 })
 
+// 5.middleware CORS
+const whitelist = ["http://localhost:4200", "http://localhost:1337",
+ "http://192.168.137.1:8080", "http://192.168.137.1:1337"];
+const corsOptions = {
+ origin: function(origin, callback) {
+ if (!origin)
+ return callback(null, true);
+ if (whitelist.indexOf(origin) === -1) {
+ var msg = 'The CORS policy for this site does not ' +
+ 'allow access from the specified Origin.';
+ return callback(new Error(msg), false);
+ }
+ else
+ return callback(null, true);
+ },
+ credentials: true
+};
+app.use("/", cors(corsOptions));
 
 //****************************************************************
 //elenco delle routes di risposta al client
@@ -104,10 +123,6 @@ app.use("/", (req, res, next) => {
     id = req.params.id;
     next();
   })
-  /*app.use("/api/:collection/:id",(req, res, next) =>{
-    id = req.params.id;
-    next();
-  })*/
 
   // listener specifici: 
   //listener GET
@@ -115,7 +130,7 @@ app.use("/", (req, res, next) => {
     let db = req["client"].db(DB_NAME) as mongodb.Db;
     let collection = db.collection(currentCollection);
     if(!id){
-      let request = collection.find().toArray();
+      let request = collection.find(req["query"]).toArray();
       request.then((data) => {
         res.send(data);
         });
@@ -128,7 +143,7 @@ app.use("/", (req, res, next) => {
     }
     else{
       let oid = new mongodb.ObjectId(id);
-      let request = collection.find({"_id":oid}).toArray();
+      let request = collection.findOne({"_id":oid});
       request.then((data) => {
         res.send(data);
         });
@@ -139,6 +154,71 @@ app.use("/", (req, res, next) => {
         req["client"].close();
       });
     }
+
+    app.post("/api/*", (req, res, next) => {
+      let db = req["client"].db(DB_NAME) as mongodb.Db;
+      let collection = db.collection(currentCollection);
+      let request = collection.insertOne(req["body"]);
+      request.then((data) => {
+        res.send(data);
+        });
+        request.catch((err) => {
+        res.status(503).send("Sintax error in the query");
+        });
+        request.finally(() => {
+        req["client"].close();
+      });
+    })
+
+    app.delete("/api/*", (req, res, next) => {
+      let db = req["client"].db(DB_NAME) as mongodb.Db;
+      let collection = db.collection(currentCollection);
+      let _id = new mongodb.ObjectId(id);
+      let request = collection.deleteOne({"_id":_id});
+      request.then((data) => {
+        res.send(data);
+        });
+        request.catch((err) => {
+        res.status(503).send("Sintax error in the query");
+        });
+        request.finally(() => {
+        req["client"].close();
+      });
+    })
+
+    app.patch("/api/*", (req, res, next) => {
+      let db = req["client"].db(DB_NAME) as mongodb.Db;
+      let collection = db.collection(currentCollection);
+      let _id = new mongodb.ObjectId(id);
+      let request = collection.updateOne({"_id":_id},{"$set":req["body"]});
+      request.then((data) => {
+        res.send(data);
+        });
+        request.catch((err) => {
+        res.status(503).send("Sintax error in the query");
+        });
+        request.finally(() => {
+        req["client"].close();
+      });
+    })
+
+    app.put("/api/*", (req, res, next) => {
+      let db = req["client"].db(DB_NAME) as mongodb.Db;
+      let collection = db.collection(currentCollection);
+      let _id = new mongodb.ObjectId(id);
+      let request = collection.replaceOne({"_id":_id},req["body"]);
+      request.then((data) => {
+        res.send(data);
+        });
+        request.catch((err) => {
+        res.status(503).send("Sintax error in the query");
+        });
+        request.finally(() => {
+        req["client"].close();
+      });
+    })
+
+
 });
   
 
@@ -146,7 +226,7 @@ app.use("/", (req, res, next) => {
 //default route(risorse non trovate) e route di gestione degli errori
 //****************************************************************
 app.use("/", function(err, req, res, next){
-    console.log("Errore codice server", err.message );
+    console.log("***************  ERRORE CODICE SERVER ", err.message, "  *****************");
 })
 
 

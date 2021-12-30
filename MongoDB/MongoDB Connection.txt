@@ -1,5 +1,6 @@
 MongoDB:
-mongodb+srv://ValinottoGiada:Valinotto1208@cluster0.rrtmz.mongodb.net/test
+mongodb+srv://ValinottoGiada:Valinotto1208>@cluster-valinotto.mkzyu.mongodb.net/test
 -----------------------------------------------------------------------
 NodeJS:
-const CONNECTION_STRING = "mongodb+srv://ValinottoGiada:Valinotto1208@cluster-valinotto.mkzyu.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+mongodb+srv://ValinottoGiada:Valinotto1208@cluster-valinotto.mkzyu.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
+Sostituire il nome del DB a "myFirstdatabase"
