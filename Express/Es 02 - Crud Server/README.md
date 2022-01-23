@@ -29,5 +29,13 @@ Più semplicemente la tavola CRUD riassume le funzioni di cui un utente ha bisog
     - Nel caso dell’update mantengono il loro vecchio valore
     - Nel caso del replace vengono rimossi
 
+# Hosting dell'applicazione su HEROKU.COM
+Heroku è una platform as a service (PaaS) sul cloud che supporta diversi linguaggi di programmazione. Fu acquisita da Salesforce.com nel 2010. Heroku incominciò ad essere sviluppata dal giugno 2007, quando supportava solamente Ruby, in seguito è stato aggiunto Java, Node.js, Scala, Clojure, Python, PHP, e Go.
+
+In seguito ad un adattamento dell'applicazione, i cui step sono reperibili a questo [link](http://robertomana.it/), è stato possibile effettuarne l'hosting su [heroku.com](heroku.com) per la visualizzazione dei dati della collezione recipeBook. La visualizzazione dei risultato è possibile [a questo link](https://valinotto-giada-crud-server.herokuapp.com/).
+
+![image](https://user-images.githubusercontent.com/62563624/150681572-8b8280a1-f4cd-42b8-a2ab-d6c090ea2523.png)
+![image](https://user-images.githubusercontent.com/62563624/150681583-0fda95bd-602f-4ebc-9506-593984fff29d.png)
+
 
 _stud. Valinotto giada, classe 5B Informatica 2021/2022_
