@@ -1,238 +1,202 @@
+//#region import
 import * as http from "http";
 import * as fs from "fs";
-import express from "express";
 import * as bodyParser from "body-parser";
+import express from "express";
+import * as mongodb from "mongodb";
 import cors from "cors";
+//#endregion
 
-// MongoDB
-import * as _mongodb from "mongodb";
-const mongoClient = _mongodb.MongoClient;
-//const CONNECTIONSTRING = "mongodb://127.0.0.1:27017"; accesso locale
-// accesso ad Atlas:
-const CONNECTIONSTRING = "mongodb+srv://ValinottoGiada:Valinotto1208@cluster-valinotto.kmj18.mongodb.net/5B?retryWrites=true&w=majority"
+//#region mongoDB
+const mongoClient = mongodb.MongoClient;
+const CONNECTION_STRING =
+  process.env.MONGODB_URI ||
+  "mongodb+srv://admin:admin@cluster0.exf0a.mongodb.net/recipeBook?retryWrites=true&w=majority";
+// const CONNECTION_STRING = "mongodb://127.0.0.1:27017";
+// const CONNECTION_STRING =
+//   "mongodb+srv://admin:admin@cluster0.niwz6.mongodb.net/5B?retryWrites=true&w=majority";
 const DB_NAME = "recipeBook";
+//#endregion
 
+const PORT: number = parseInt(process.env.PORT) || 1337;
+const app = express();
 
-let port : number = 1337;
-let app = express();
+const server = http.createServer(app);
 
-let server = http.createServer(app);
-
-server.listen(port,function(){
-    console.log("server in ascolto sulla porta: " + port);
-    init();
+server.listen(PORT, () => {
+  console.log(`Server in ascolto sulla porta: ${PORT}`);
+  init();
 });
 
 let paginaErrore = "";
-function init(){
-    fs.readFile("./static/error.html",function(err,data){
-        if(!err){
-            paginaErrore = data.toString();
-        }
-        else{
-            paginaErrore = "<h2> Risorsa non trovata </h2>";
-        }
-    });
+function init() {
+  fs.readFile("./static/error.html", (err, data) => {
+    if (!err) paginaErrore = data.toString();
+    else paginaErrore = "<h2>Risorsa non trovata</h2>";
+  });
 }
 
-// **********************************************************************
-// Elenco delle routes di tipo Middleware
-// **********************************************************************
-// 1. log
-app.use("/", function (req, res, next) {
-    console.log(" -----> " + req.method + ":" + req.originalUrl);
-    next(); 
+/*  ******************************************
+    //  elenco delle routes middleware
+    ****************************************** */
+
+//  1. Log
+app.use("/", (req, res, next) => {
+  console.log("---> ", req.method + ": " + req.originalUrl);
+  next();
 });
 
-// 2. static route
-// esegue il next automaticamente quando non trova la risorsa
-app.use("/", express.static("./static"));
+//  2. Static route
+app.use("/", express.static("./static")); //  next fa in automatico
 
-// 3. route di lettura parametri post
-app.use("/", bodyParser.json()); // intercetta i parametri in formato json
-app.use("/", bodyParser.urlencoded({"extended":true})); // parametri body
+//  3. Route lettura paramentri post
+app.use("/", bodyParser.json());
+app.use("/", bodyParser.urlencoded({ extended: true }));
 
-// 4. log dei parametri
-app.use("/",function(req,res,next){
-    if(Object.keys(req.query).length > 0){
-        console.log("      Parametri GET: ",req.query);
-    }
-    if(Object.keys(req.body).length > 0){
-        console.log("      Parametri BODY: ",req.body);
-    }
-    next();
+//  4. Log dei parametri
+app.use("/", (req, res, next) => {
+  if (Object.keys(req.query).length > 0) console.log("GET --->", req.query);
+  if (Object.keys(req.body).length > 0) console.log("BODY --->", req.body);
+  next();
 });
 
-// 5. middleware cors, gestisce le richieste cross origin
-const whitelist = ["http://localhost:4200", "http://localhost:1337"];
+//  5. Connessione al DB
+app.use("/", (req, res, next) => {
+  mongoClient.connect(CONNECTION_STRING, (err, client) => {
+    if (err) res.status(503).send("DB connection error");
+    else {
+      req["client"] = client;
+      next();
+    }
+  });
+});
+
+//  6. Middleware cors
+const whitelist = [
+  "http://localhost:4200",
+  "http://localhost:1337",
+  "https://raccapaolo-crudserver.herokuapp.com",
+];
 const corsOptions = {
- origin: function(origin, callback) {
- if (!origin)
- return callback(null, true);
- if (whitelist.indexOf(origin) === -1) {
- var msg = 'The CORS policy for this site does not ' +
- 'allow access from the specified Origin.';
- return callback(new Error(msg), false);
- } 
- else
- return callback(null, true);
- },
- credentials: true
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+    if (whitelist.indexOf(origin) === -1) {
+      var msg =
+        "The CORS policy for this site does not " +
+        "allow access from the specified Origin.";
+      return callback(new Error(msg), false);
+    } else return callback(null, true);
+  },
+  credentials: true,
 };
 app.use("/", cors(corsOptions));
 
-// **********************************************************************
-// Elenco delle routes di risposta al client
-// **********************************************************************
-// middleware di apertura della connessione
-app.use("/",function(req,res,next){
-    mongoClient.connect(CONNECTIONSTRING,function(err,client){
-        if(err){
-            res.status(503).send("Errore nella connessione al DB");
-        }
-        else{
-            console.log(">>>>>> Connected succesfully");
-            req["client"] = client;
-            next();
-        }
-    });
+/*  ******************************************
+    elenco delle routes di risposta al client
+    ****************************************** */
+
+//  middleware di intercettazione dei parametri
+let currentCollection: string = "";
+let id: string = "";
+
+app.use("/api/:collection/:id?", (req, res, next) => {
+  currentCollection = req.params.collection;
+  id = req.params.id;
+  next();
 });
 
-// lettura delle collezioni presenti nel DB
-app.get("/api/getCollections",function(req,res,next){
-    let db = req["client"].db(DB_NAME) as _mongodb.Db;
-    let request = db.listCollections().toArray();
-    request.then(function(data){
-        res.send(data);
-    });
-    request.catch(function(err){
-        res.status(503).send("Errore esecuzione query");
-    })
-    request.finally(function(){
-        req["client"].close();
-    })
+//  lettura delle collezioni presenti nel db
+app.get("/api/getCollections", (req, res, next) => {
+  let db = req["client"].db(DB_NAME) as mongodb.Db;
+  let collections = db
+    .listCollections()
+    .toArray()
+    .then((data) => res.send(data))
+    .catch((err) => res.status(503).send("QUERY: Syntax error"))
+    .finally(() => req["client"].close());
 });
 
-// middleware di intercettazione dei parametri
-let currentCollection = "";
-let id = "";
-// id? campo facoltativo
-app.use("/api/:collection/:id?",function(req,res,next){
-    currentCollection = req.params.collection;
-    id = req.params.id;
-    next();
-});
+//  listener specifici
 
-
-// listener specifici:
-app.get("/api/*",function(req,res,next){
-    let db = req["client"].db(DB_NAME) as _mongodb.Db;
+app.get("/api/*", (req, res, next) => {
+  if (currentCollection) {
+    let db = req["client"].db(DB_NAME) as mongodb.Db;
     let collection = db.collection(currentCollection);
-    if(!id)
-    {
-        let request = collection.find(req["query"]).toArray();
-        request.then(function(data){
-            res.send(data);
-        });
-        request.catch(function(err){
-            res.status(503).send("Errore esecuzione query");
-        })
-        request.finally(function(){
-            req["client"].close();
-        })
+    if (!id) {
+      collection
+        .find(req["query"])
+        .toArray()
+        .then((data) => res.send(data))
+        .catch((err) => res.status(503).send("QUERY: Syntax error"))
+        .finally(() => req["client"].close());
+    } else {
+      const oId = new mongodb.ObjectId(id);
+      collection
+        .findOne({ _id: oId })
+        .then((data) => res.send(data))
+        .catch((err) => res.status(503).send("QUERY: Syntax error"))
+        .finally(() => req["client"].close());
     }
-    else
-    {
-        let oId = new _mongodb.ObjectId(id);
-        let request = collection.findOne({"_id":oId});
-        request.then(function(data){
-            res.send(data);
-        });
-        request.catch(function(err){
-            res.status(503).send("Errore esecuzione query");
-        })
-        request.finally(function(){
-            req["client"].close();
-        })
-    }
+  } else {
+    res.status(400).send("Parametro mancante: collection");
+    req["client"].close();
+  }
 });
 
-app.post("/api/*",function(req,res,next){
-    let db = req["client"].db(DB_NAME) as _mongodb.Db;
+app.post("/api/*", (req, res, next) => {
+  if (currentCollection) {
+    let db = req["client"].db(DB_NAME) as mongodb.Db;
     let collection = db.collection(currentCollection);
-    let request = collection.insertOne(req["body"]);
-    request.then(function(data){
-        res.send(data);
-    });
-    request.catch(function(err){
-        res.status(503).send("Errore esecuzione query");
-    })
-    request.finally(function(){
-        req["client"].close();
-    })
+    collection
+      .insertOne(req["body"])
+      .then((data) => res.send(data))
+      .catch((err) => res.status(503).send("QUERY: Syntax error"))
+      .finally(() => req["client"].close());
+  }
 });
 
-app.delete("/api/*",function(req,res,next){
-    let db = req["client"].db(DB_NAME) as _mongodb.Db;
+app.delete("/api/*", (req, res, next) => {
+  if (currentCollection) {
+    let db = req["client"].db(DB_NAME) as mongodb.Db;
     let collection = db.collection(currentCollection);
-    let _id = new _mongodb.ObjectId(id);
-    let request = collection.deleteOne({"_id":_id});
-    request.then(function(data){
-        res.send(data);
-    });
-    request.catch(function(err){
-        res.status(503).send("Errore esecuzione query");
-    })
-    request.finally(function(){
-        req["client"].close();
-    })
+    const oId = new mongodb.ObjectId(id);
+    collection
+      .deleteOne({ _id: oId })
+      .then((data) => res.send(data))
+      .catch((err) => res.status(503).send("QUERY: Syntax error"))
+      .finally(() => req["client"].close());
+  }
 });
 
-app.patch("/api/*",function(req,res,next){
-    let db = req["client"].db(DB_NAME) as _mongodb.Db;
+app.patch("/api/*", (req, res, next) => {
+  if (currentCollection) {
+    let db = req["client"].db(DB_NAME) as mongodb.Db;
     let collection = db.collection(currentCollection);
-    let _id = new _mongodb.ObjectId(id);
-    let request = collection.updateOne({"_id":_id},{"$set":req["body"]});
-    request.then(function(data){
-        res.send(data);
-    });
-    request.catch(function(err){
-        res.status(503).send("Errore esecuzione query");
-    })
-    request.finally(function(){
-        req["client"].close();
-    })
+    const oId = new mongodb.ObjectId(id);
+    collection
+      .updateOne({ _id: oId }, { $set: req["body"] })
+      .then((data) => res.send(data))
+      .catch((err) => res.status(503).send("QUERY: Syntax error"))
+      .finally(() => req["client"].close());
+  }
 });
 
-app.put("/api/*",function(req,res,next){
-    let db = req["client"].db(DB_NAME) as _mongodb.Db;
+app.put("/api/*", (req, res, next) => {
+  if (currentCollection) {
+    let db = req["client"].db(DB_NAME) as mongodb.Db;
     let collection = db.collection(currentCollection);
-    let _id = new _mongodb.ObjectId(id);
-    let request = collection.replaceOne({"_id":_id},req["body"]);
-    request.then(function(data){
-        res.send(data);
-    });
-    request.catch(function(err){
-        res.status(503).send("Errore esecuzione query");
-    })
-    request.finally(function(){
-        req["client"].close();
-    })
+    const oId = new mongodb.ObjectId(id);
+    collection
+      .replaceOne({ _id: oId }, req["body"])
+      .then((data) => res.send(data))
+      .catch((err) => res.status(503).send("QUERY: Syntax error"))
+      .finally(() => req["client"].close());
+  }
 });
 
-// **********************************************************************
-// Default route (risorsa non trovata) e route di gestione degli errori 
-// **********************************************************************
-app.use("/", function (req, res, next) {
-    res.status(404);
-    if(req.originalUrl.startsWith("/api/")){
-        res.send("Risorsa non trovata");
-    }
-    else{
-        res.send(paginaErrore);
-    }
-});
-
-app.use(function(err, req, res, next) {
-    console.log("*************** ERRORE CODICE SERVER",err.message, "***************");
+/*  ******************************************
+    default route e route di gestione degli errori
+    ****************************************** */
+app.use("/", (err, req, res, next) => {
+  console.log("**** ERRORE SERVER ***** " + err); //  da correggere
 });
