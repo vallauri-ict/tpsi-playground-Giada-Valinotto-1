@@ -75,7 +75,7 @@ app.use("/", (req, res, next) => {
 const whitelist = [
   "http://localhost:4200",
   "http://localhost:1337",
-  "https://raccapaolo-crudserver.herokuapp.com",
+  "https://valinotto-giada-crud-server.herokuapp.com",
 ];
 const corsOptions = {
   origin: function (origin, callback) {
