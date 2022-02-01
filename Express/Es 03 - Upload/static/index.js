@@ -5,7 +5,7 @@ $(document).ready(function() {
  aggiornaTabella()
 	
  function aggiornaTabella(){
-	let request = inviaRichiesta("GET", "/api/elenco")
+	let request = inviaRichiesta("GET", "/api/images")
 	request.fail(errore)
 	request.done(function(data){
 		let tbody = $("#mainTable").children("tbody")
@@ -16,8 +16,8 @@ $(document).ready(function() {
 			// se NON è un base64  e  NON è un cloudinary
 			if (!item.img.toString().startsWith("data:image") && 
 				!item.img.toString().startsWith("https://res.cloudinary.com"))
-					 item.img = "img/" + item.img;
-			let img = $("<img>").prop("src", item.img).css("max-height","60px")
+					 item.img = "img/" + item.img; //Se l'immagine è binaria mette img davanti che è il percorso per andare a prenderla
+			let img = $("<img>").prop("src", item.img).css("max-height","60px") //nel tag img carica l'immagine
 			$("<td>").appendTo(tr).append(img)
 		}
 	})
