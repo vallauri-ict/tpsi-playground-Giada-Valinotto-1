@@ -5,21 +5,12 @@ import * as body_parser from "body-parser";
 import * as mongodb from "mongodb";
 import cors from "cors";
 import fileUpload, { UploadedFile } from "express-fileupload";
-import ENVIRONMENT from "./environment.json"
-import cloudinary, { UploadApiResponse } from "cloudinary"
-
-cloudinary.v2.config({
-  cloud_name: ENVIRONMENT.CLOUD_NAME,
-  api_key: ENVIRONMENT.API_KEY,
-  api_secret: ENVIRONMENT.API_SECRET,
-  // secure:true // https
- });
- 
 
 const mongoClient = mongodb.MongoClient;
 const CONNECTION_STRING =
   process.env.MONGODB_URI ||
-  "mongodb+srv://admin:admin@cluster0.exf0a.mongodb.net/5B?retryWrites=true&w=majority";/*
+  "mongodb+srv://admin:admin@cluster0.exf0a.mongodb.net/5B?retryWrites=true&w=majority";
+/*
 const CONNECTION_STRING =
   "mongodb://admin:admin@cluster0-shard-00-00.zarz7.mongodb.net:27017,cluster0-shard-00-01.zarz7.mongodb.net:27017,cluster0-shard-00-02.zarz7.mongodb.net:27017/test?replicaSet=atlas-bgntwo-shard-0&ssl=true&authSource=admin";
 */
@@ -37,11 +28,10 @@ server.listen(port,function(){
     init();
 });
 const whitelist = [
-      "https://luca-dellavalle-crud-server.herokuapp.com",
-      "http://luca-dellavalle-crud-server.herokuapp.com",
-      "http://localhost:1337",
-      "http://localhost:4200"
-    ];
+  "http://localhost:4200",
+  "http://localhost:1337",
+  "https://valinotto-giada-crud-server.herokuapp.com",
+];
 
 let paginaErrore="";
 function init(){
@@ -59,6 +49,7 @@ function init(){
 //****************************************************************
 //elenco delle routes di tipo middleware
 //****************************************************************
+
 // 1.log 
 app.use("/",function(req, res, next){
     console.log("---->" + req.method + ":"+ req.originalUrl);
@@ -84,7 +75,7 @@ app.use("/", function(req, res, next){
     next();
 })
 
-// 5. cors 
+// 5. CORS
 const corsOptions = {
   origin: function(origin, callback) {
   if (!origin)
@@ -101,16 +92,16 @@ const corsOptions = {
  };
  app.use("/", cors(corsOptions) as any);
 
- // 6. fileUpload
+ // 6. File Upload
  app.use(fileUpload({
   "limits ": { "fileSize ": (10 * 1024 * 1024) } // 10 MB
  }));
  
 
-
 //****************************************************************
 //elenco delle routes di risposta al client
 //****************************************************************
+
 // middleware di apertura della connessione
 app.use("/", (req, res, next) => {
     mongoClient.connect(CONNECTION_STRING, (err, client) => {
@@ -142,78 +133,36 @@ app.use("/", (req, res, next) => {
   })
 
   app.post("/api/uploadBinary", (req, res, next) => {
-    if (!req.files || Object.keys(req.files).length == 0 || !req.body.username)
-      res.status(400).send('Manca immagine o username');
-    else{
-    let file = req.files.img as UploadedFile;
-    file.mv('./static/img/' + file["name"], function(err) {
-      if (err)
-        res.status(500).json(err.message);
+    // Appunti pagina 12 Express express-fileupload
+      if (!req.files || Object.keys(req.files).length == 0 || !req.body.username)
+     res.status(400).send('No files were uploaded');
       else{
-        //insert nel DB
-        let db = req["client"].db(DB_NAME) as mongodb.Db;
-        let collection = db.collection("images");
-        let user = {
-          "username":req.body.username,
-          "img":file.name
-        }
-        let request = collection.insertOne(user);
-        request.then((data) => {
-          res.send(data);
-          });
-          request.catch((err) => {
-          res.status(503).send("Sintax error in the query");
-          });
-          request.finally(() => {
-          req["client"].close();
-        });
-      }
-      })
+      let file = req.files.img as UploadedFile; // l'alias serve per specificare che si tratta di un singolo file
+      file.mv('./static/img/' + file["name"], function(err) {
+     if (err)
+     res.status(500).json(err.message);
+     else
+     {
+     let db = req["client"].db(DB_NAME) as mongodb.Db;
+     let collection = db.collection("images");
+     let user ={
+       "username": req.body.username,
+       "img": file.name
+     }
+     let request = collection.find().toArray();
+     request.then((data) => {
+       res.send(data);
+       });
+       request.catch((err) => {
+       res.status(503).send("Sintax error in the query");
+       });
+       request.finally(() => {
+       req["client"].close();
+     });
     }
-  })
-
-  app.post("/api/uploadBase64", (req, res, next) => {
-    let db = req["client"].db(DB_NAME) as mongodb.Db;
-    let collection = db.collection("images");
-    let request = collection.insertOne(req.body);
-    request.then((data) => {
-      res.send(data);
-      });
-      request.catch((err) => {
-      res.status(503).send("Sintax error in the query");
-      });
-      request.finally(() => {
-      req["client"].close();
-    });
-  })
-
-  
- // Upload file con Cloudinary
- app.post("/api/cloudinary/", function(req, res, next){
-  cloudinary.v2.uploader.upload(req.body.image)
-  .catch((error) => {
-  res.status(500).send("Error uploading file to Cloudinary")
-  })
-  .then((result: UploadApiResponse) => {
-  //Richiesta verso Atlas
-  let db = req["client"].db(DB_NAME) as mongodb.Db;
-  let collection = db.collection("images");
-  let user = {
-    "username":req.body.username,
-    "img": result.secure_url  //as UploadApiResponse
-  }
-  let request = collection.insertOne(user);
-  request.then((data) => {
-    res.send(data);
-    });
-    request.catch((err) => {
-    res.status(503).send("Sintax error in the query");
-    });
-    request.finally(() => {
-    req["client"].close();
-  });
-  })
- })
+      })
+      }
+     });
 
 //****************************************************************
 //default route(risorse non trovate) e route di gestione degli errori
@@ -221,6 +170,5 @@ app.use("/", (req, res, next) => {
 app.use("/", function(err, req, res, next){
     console.log("***************  ERRORE CODICE SERVER ", err.message, "  *****************");
 })
-
 
 

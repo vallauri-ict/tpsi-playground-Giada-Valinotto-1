@@ -35,6 +35,7 @@ function inviaRichiestaMultipart(method, url, formData){
         type: method,
         data:formData,
 		
+        // necessari per la trasmissione del formData
 		contentType:false,
 		processData:false,
 		cache:false,

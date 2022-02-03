@@ -5,7 +5,7 @@ $(document).ready(function() {
  aggiornaTabella()
 	
  function aggiornaTabella(){
-	let request = inviaRichiesta("GET", "/api/images")
+	let request = inviaRichiesta("GET", "/api/images") // Chiede l'elenco delle persone e le visualizza nella tabella
 	request.fail(errore)
 	request.done(function(data){
 		let tbody = $("#mainTable").children("tbody")
@@ -14,7 +14,7 @@ $(document).ready(function() {
 			let tr = $("<tr>").appendTo(tbody).addClass("text-center")
 			$("<td>").appendTo(tr).text(item.username).css("font-size", "14pt")
 			// se NON è un base64  e  NON è un cloudinary
-			if (!item.img.toString().startsWith("data:image") && 
+			if (!item.img.toString().startsWith("data:image") &&  // Il primo è base64, il secondo è un file memorizzato sucluodinary
 				!item.img.toString().startsWith("https://res.cloudinary.com"))
 					 item.img = "img/" + item.img; //Se l'immagine è binaria mette img davanti che è il percorso per andare a prenderla
 			let img = $("<img>").prop("src", item.img).css("max-height","60px") //nel tag img carica l'immagine
@@ -24,20 +24,22 @@ $(document).ready(function() {
  }
 
 
- $("#btnBinary").on("click", function() {
-	let file = txtFile.prop('files')[0]
+ $("#btnBinary").on("click", function() {	// Funzionamento normale 
+	let file = txtFile.prop('files')[0] // restituisce sempre un vettore di file
 	let username = txtUser.val()
 	if (!file || !txtUser.val()){
 		alert("prego, inserire uno username e scegliere un file")
 		return;
 	}
-	
-	let form = $("form").get(0)
-	let formData = new FormData();		
-	formData.append('username', username);		
+
+	let formData = new FormData();	// Instanzio un oggetto per il caricamento anche dei file binari
+									// Non si può passare in GET 
+
+	formData.append('username', username);	//Aggiungo dei parametri 	
 	formData.append('img', file);		
 			
 	// l'upload delle immagini NON può essere eseguito in GET
+	// Si usa una procedura diversa dalla solita -> INVIARICHIESTAMULTIPART
 	let rq = inviaRichiestaMultipart("POST", "/api/uploadBinary", formData);
 	rq.fail(errore)
 	rq.done(function(data){
