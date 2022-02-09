@@ -167,6 +167,8 @@ app.use("/", (req, res, next) => {
 //****************************************************************
 //default route(risorse non trovate) e route di gestione degli errori
 //****************************************************************
+
+
 app.use("/", function(err, req, res, next){
     console.log("***************  ERRORE CODICE SERVER ", err.message, "  *****************");
 })

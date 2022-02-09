@@ -5,7 +5,7 @@ $(document).ready(function() {
  aggiornaTabella()
 	
  function aggiornaTabella(){
-	let request = inviaRichiesta("GET", "/api/images") // Chiede l'elenco delle persone e le visualizza nella tabella
+	let request = inviaRichiesta("GET", "/api/images")
 	request.fail(errore)
 	request.done(function(data){
 		let tbody = $("#mainTable").children("tbody")
@@ -14,32 +14,30 @@ $(document).ready(function() {
 			let tr = $("<tr>").appendTo(tbody).addClass("text-center")
 			$("<td>").appendTo(tr).text(item.username).css("font-size", "14pt")
 			// se NON è un base64  e  NON è un cloudinary
-			if (!item.img.toString().startsWith("data:image") &&  // Il primo è base64, il secondo è un file memorizzato sucluodinary
+			if (!item.img.toString().startsWith("data:image") && 
 				!item.img.toString().startsWith("https://res.cloudinary.com"))
-					 item.img = "img/" + item.img; //Se l'immagine è binaria mette img davanti che è il percorso per andare a prenderla
-			let img = $("<img>").prop("src", item.img).css("max-height","60px") //nel tag img carica l'immagine
+					 item.img = "img/" + item.img;
+			let img = $("<img>").prop("src", item.img).css("max-height","60px")
 			$("<td>").appendTo(tr).append(img)
 		}
 	})
  }
 
 
- $("#btnBinary").on("click", function() {	// Funzionamento normale 
-	let file = txtFile.prop('files')[0] // restituisce sempre un vettore di file
+ $("#btnBinary").on("click", function() {
+	let file = txtFile.prop('files')[0]
 	let username = txtUser.val()
 	if (!file || !txtUser.val()){
 		alert("prego, inserire uno username e scegliere un file")
 		return;
 	}
-
-	let formData = new FormData();	// Instanzio un oggetto per il caricamento anche dei file binari
-									// Non si può passare in GET 
-
-	formData.append('username', username);	//Aggiungo dei parametri 	
+	 
+	//serve a salvare il file binario 
+	let formData = new FormData();		
+	formData.append('username', username);		
 	formData.append('img', file);		
 			
 	// l'upload delle immagini NON può essere eseguito in GET
-	// Si usa una procedura diversa dalla solita -> INVIARICHIESTAMULTIPART
 	let rq = inviaRichiestaMultipart("POST", "/api/uploadBinary", formData);
 	rq.fail(errore)
 	rq.done(function(data){
@@ -71,7 +69,7 @@ $(document).ready(function() {
  });
 
 
- $("#btnCloudinary").on("click", function() {
+ $("#btnCloudinaryBase64").on("click", function() {
 	let file = txtFile.prop('files')[0]	
 	if (!file || !txtUser.val()){
 		alert("prego, inserire uno username e scegliere un file")
@@ -82,8 +80,8 @@ $(document).ready(function() {
 	let reader = new FileReader();   
 	reader.readAsDataURL(file) 
 	reader.onload = function(){	
-		let rq = inviaRichiesta("POST", "/api/cloudinary", 
-						{"username":txtUser.val(), "img":reader.result})
+		let rq = inviaRichiesta("POST", "/api/cloudinaryBase64", 
+						{"username":txtUser.val(), "image":reader.result})
 		rq.fail(errore)
 		rq.done(function(data){
 			alert("upload eseguito correttamente")
@@ -91,6 +89,35 @@ $(document).ready(function() {
 		})
 
 	}
+ });
+
+ $("#btnCloudinaryBinario").on("click", function() {
+	let file = txtFile.prop('files')[0]	
+	if (!file || !txtUser.val()){
+		alert("prego, inserire uno username e scegliere un file")
+		return;
+	}
+	
+	let file = txtFile.prop('files')[0]
+	let username = txtUser.val()
+	if (!file || !txtUser.val()){
+		alert("prego, inserire uno username e scegliere un file")
+		return;
+	}
+	 
+	//serve a salvare il file binario 
+	let formData = new FormData();		
+	formData.append('username', username);		
+	formData.append('img', file);		
+			
+	// l'upload delle immagini NON può essere eseguito in GET
+	let rq = inviaRichiestaMultipart("POST", "/api/cloudinaryBinario", formData);
+	rq.fail(errore)
+	rq.done(function(data){
+		alert("upload eseguito correttamente")
+		aggiornaTabella()
+	})
+
  });
 });
 
