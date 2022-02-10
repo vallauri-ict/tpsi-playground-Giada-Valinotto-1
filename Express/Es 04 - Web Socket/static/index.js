@@ -1,47 +1,37 @@
 $(document).ready(function() {
-    let user = {"username": "", "room": ""}; 
- 
+    let user = {"username":"","room":""};
+    
 	// mi connetto al server che mi ha inviato la pagina,
 	// il quale mi restituisce il suo serverSocket
 	// io.connect é SINCRONO, bloccante
-	let serverSocket = io({transports:['websocket'], upgrade: false}).connect();
+    $("#btnConnetti").on("click", function(){
+        let serverSocket = io({transports:['websocket'], upgrade: false}).connect();
+    })
 
     /* 1a) lo username viene inviato SOLO a connessione avvenuta
 	       in questo modo si evita di connetere/disconnettere + volte */
 	serverSocket.on('connect', function() {
 		console.log("connessione ok");
-        user.username = prompt("Inserisci lo username:"); //Inserimento basico di username
-        if(user.username== "Pippo" || user.username== "Pluto")
-        {
-            user.room="room1"
-        }
-        else
-        {
-            user.room = "defaultRoom";
-        }
-        serverSocket.emit("login", JSON.stringify(user)); // messaggio verso il server 
+        user.username = prompt("Inserisci lo username:");
+        impostaUser();
+        serverSocket.emit("login", JSON.stringify(user));
     });
 
-    // 1b) utente valido / non valido -> Se arriva un NACK dal Server 
+    // 1b) utente valido / non valido
     serverSocket.on('loginAck', function(data) {
 		if (data=="NOK"){
 			alert("Nome già esistente. Scegliere un altro nome")
-			username = prompt("Inserisci un nuovo username:");
-			serverSocket.emit("login", username);
+			impostaUser();
+            serverSocket.emit("login", JSON.stringify(user));
 		}
 		else
-			document.title = username;
+			document.title = user.username;
     });  
 
 	// 2a) invio messaggio
     $("#btnInvia").click(function() {
         let msg = $("#txtMessage").val();
-
-        //Spedisco a tutti, compreso il mittente
-        //serverSocket.emit("message", msg);
-
-        //Spedisco solo alla stanza richiesta 
-        io.to(user.room).emit("message", msg);
+        serverSocket.emit("message", msg);
     });
 	
     // 2b) ricezione della risposta
@@ -60,15 +50,25 @@ $(document).ready(function() {
         alert("Sei stato disconnesso!");
     });
 
+    function impostaUser(){
+        if(user.username == "pippo"||user.username == "pluto")
+        {
+            user.room = "room1";
+        }
+        else
+        {
+            user.room = "defaultRoom";
+        }
+    }
 
     function visualizza(username, message, date) {
-        let wrapper = $("#wrapper") //Accede al wrapper 
-        let container = $("<div class='message-container'></div>"); //Crea un nuovo tag div 
-        container.appendTo(wrapper); //Appende il container al wrapper 
+        let wrapper = $("#wrapper")
+        let container = $("<div class='message-container'></div>");
+        container.appendTo(wrapper);
 
         // username e date
         date = new Date(date);
-        let mittente = $("<small class='message-from'>" + username + " @" 
+        let mittente = $("<small class='message-from'>" + user.username + " @" 
 		                  + date.toLocaleTimeString() + "</small>");
         mittente.appendTo(container);
 
