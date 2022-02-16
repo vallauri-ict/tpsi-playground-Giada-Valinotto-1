@@ -120,9 +120,3 @@ dist
 
 # vsCode
 .vscode
-
-# Environment con info su Cluodinary
-environment.json
-
-# Chiavi RSA
-keys/
