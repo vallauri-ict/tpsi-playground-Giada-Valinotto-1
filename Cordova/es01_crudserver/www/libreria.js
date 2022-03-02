@@ -1,3 +1,5 @@
+const URL = "https://valinotto-giada-crud-server.herokuapp.com";
+
 function inviaRichiesta(method, url, parameters = {}) {
     let contentType;
     if (method.toUpperCase() == "GET") {
