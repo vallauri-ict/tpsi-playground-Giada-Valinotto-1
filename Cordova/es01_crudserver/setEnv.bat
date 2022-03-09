@@ -15,7 +15,7 @@ SET PATH=%PATH%;C:\Users\valin\AppData\Local\Android\Sdk\tools;
 SET PATH=%PATH%;C:\Users\valin\AppData\Local\Android\Sdk\platform-tools;
 
 REM percorso GRADLE (copiare dai settings di Android Studio)
-SET PATH=%PATH%;C:\Users\valin\.gradle\wrapper\dists\gradle-7.2-bin;
+REM SET PATH=%PATH%;C:\Users\valin\.gradle\wrapper\dists\gradle-7.2-bin;
 
 echo done
 
