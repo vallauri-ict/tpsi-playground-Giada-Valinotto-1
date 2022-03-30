@@ -54,6 +54,22 @@ di sicurezza con l‟inserimento di un PIN personale memorizzato su una scheda o
 scaduto, il server ne crea ed invia uno nuovo con la scadenza aggiornata. Se non ci si collega per
 più giorni occorre poi rifare il login.
 
+## Gestione delle password tramite la libreria bcrypt
+La libreria bcrypt distribuita tramite npm è scritta in C++ e non è supportata da heroku.
+Sono invece supportate bcrypt-nodejs (più vecchia di bcrypt) e bcryptjs che è una libreria
+interamente scritta in javascript considerata del tutto equivalente a bcrypt (soltanto più lenta). 
+
+Utilizza una salt-criptography. Il nome deriva dal fatto che il sale solitamente ostruisce le arterie ed in
+questo caso viene utilizzato per ostruire eventuali attacchi mirati alla scoperta delle password.
+La ragione che sta alla base della salt-criptography è che di solito gli utenti tendono a scegliere
+password semplici e conosciute in modo da poterle facilmente ricordare. 
+
+Le password normalmente vengono salvate all‟interno del database non in modo diretto ma tramite una
+impronta irreversibile come ad esempio una hash MD5. Se però la password è semplice esistono molte
+applicazioni che, tramite ricerca sequenziale, consentono di risalire alla password originaria.
+Lo scopo della salt-criptography è quello di ‘randomizzare’ una password comune, in modo da
+creare una password risultante meno standard e difficilmente individuabile in un database di reverte. 
+
 👩‍🎓 _Stud. Valinotto Giada, 5B INF 2021/2022_
 
 🏫 _I.I.S. G. Vallauri Fossano_
