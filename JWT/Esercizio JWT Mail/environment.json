@@ -1,0 +1,10 @@
+{
+    "CLOUDINARY": {
+        "CLOUD_NAME": "valinotto-giada",
+        "API_KEY": "353419727116748",
+        "API_SECRET": "p-yN3onN3g_tcMYruZAB9Ij5bcg",
+        "CLOUDINARY_URL": "CLOUDINARY_URL=cloudinary://353419727116748:p-yN3onN3g_tcMYruZAB9Ij5bcg@valinotto-giada"
+    },
+    "CONNECTION_STRING_ATLAS": "mongodb+srv://admin:admin@cluster0.exf0a.mongodb.net/mail?retryWrites=true&w=majority",
+    "CONNECTION_STRING_LOCAL": "mongodb://127.0.0.1:27017"
+}
