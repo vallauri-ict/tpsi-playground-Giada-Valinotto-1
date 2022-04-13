@@ -1,0 +1,101 @@
+<h1 align="center">Rivendita Automobili Usate</h1>
+<div class="container">
+  <div class="row">
+    <div class="col-sm-2 col-lg-4"></div>
+    <div class="col-sm-8 col-lg-4">
+      <div class="form-group">
+        <label for="txtId">Id:</label>
+        <input
+          type="text"
+          id="txtId"
+          readonly
+          [value]="this.autoService?.veicoloSelezionato?.id"
+        />
+      </div>
+      <div class="form-group">
+        <label for="txtNome">Nome:</label>
+        <input
+          type="text"
+          id="txtNome"
+          readonly
+          [value]="this.autoService?.modelloSelezionato?.nome"
+        />
+      </div>
+      <div class="form-group">
+        <label for="txtAlimentazione">Alimentazione:</label>
+        <input
+          type="text"
+          id="txtAlimentazione"
+          readonly
+          [value]="this.autoService?.modelloSelezionato?.alimentazione"
+        />
+      </div>
+      <div class="form-group">
+        <label for="txtCilindrata">Cilindrata:</label>
+        <input
+          type="text"
+          id="txtCilindrata"
+          readonly
+          [value]="this.autoService?.modelloSelezionato?.cilindrata"
+        />
+      </div>
+      <div class="form-group">
+        <label for="txtTarga">Targa:</label>
+        <input
+          type="text"
+          id="txtTarga"
+          readonly
+          [value]="this.autoService?.veicoloSelezionato?.targa"
+        />
+      </div>
+      <div class="form-group">
+        <label for="txtColore">Colore:</label>
+        <input
+          type="text"
+          id="txtColore"
+          readonly
+          [value]="this.autoService?.veicoloSelezionato?.colore"
+        />
+      </div>
+      <div class="form-group">
+        <label for="txtAnno">Anno:</label>
+        <input
+          type="text"
+          id="txtAnno"
+          readonly
+          [value]="this.autoService?.veicoloSelezionato?.anno"
+        />
+      </div>
+      <div class="form-group">
+        <label for="txtKm">Km:</label>
+        <input
+          type="text"
+          id="txtKm"
+          readonly
+          [value]="this.autoService?.veicoloSelezionato?.km"
+        />
+      </div>
+      <div class="form-group">
+        <label for="txtPrezzo">Prezzo:</label>
+        <input
+          type="text"
+          id="txtPrezzo"
+          style="width: 100px"
+          [(ngModel)]="this.autoService.prezzoVeicoloSelezionato"
+        />
+        <input
+          type="button"
+          id="btnAggiorna"
+          style="width:100px height:24px; font-size:8pt;"
+          class="btn btn-secondary btn-xs"
+          value="aggiorna"
+          (click)="autoService.updatePrice()"
+        />
+      </div>
+      <div class="form-group">
+        <img id="imgLarge" />
+      </div>
+    </div>
+    <div class="col-sm-2 col-lg-4"></div>
+  </div>
+</div>

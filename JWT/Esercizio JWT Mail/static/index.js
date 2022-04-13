@@ -7,6 +7,8 @@ $(document).ready(function() {
     /* **************************** AVVIO **************************** */
     let mailRQ = inviaRichiesta('GET', '/api/elencoMail', );
     mailRQ.done(function(data) {
+        //Quando arrivano i dati, il container diventa visibile
+        //In alternativa, si può usare splashscreen 
         $(".container").css("visibility", "visible")
         visualizzaMail(data);
     });

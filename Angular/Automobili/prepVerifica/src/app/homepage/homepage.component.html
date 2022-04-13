@@ -1,0 +1,64 @@
+<h1 align="center">Rivendita Automobili Usate</h1>
+	<div class="container">
+		<div class='row'>
+			<div class='col-sm-2 col-lg-4'> </div>					
+			<div class='col-sm-8 col-lg-4'> 
+				<div class="form-group">
+					<label for="lstMarche">
+						Seleziona la Marca che ti interessa:
+					</label>
+					<select class="form-control" id="lstMarche" [(ngModel)]="selectedMarca" (change)="getModels()">
+                        <option></option>
+                        <option *ngFor="let marca of autoService?.marche"  [value]="marca.id">
+                            {{marca.nome}}
+                        </option>
+					</select>	
+				</div>	
+				<div class="form-group">
+					<label for="lstModelli">
+						Seleziona il Modello che ti interessa:
+					</label>
+					<select class="form-control" id="lstModelli" [(ngModel)]="selectedModello" (change)="getCars()">
+                        <option></option>
+                        <option *ngFor="let modello of autoService?.modelli"  [ngValue]="modello">
+                            {{modello.nome}} - {{modello.alimentazione}}
+                        </option>
+					</select>	
+				</div>							
+			</div>
+			<div class='col-sm-2 col-lg-4'> </div>
+		</div>
+		
+		<div class='row' *ngIf="selectedMarca">
+			<div class='col-lg-1 col-xl-2'> </div>					
+			<div class='col-sm-12 col-lg-10 col-xl-8 table-responsive'>
+				<table class='table table-striped  table-sm'>
+                    <thead>
+                        <tr>
+                            <th>nome</th>
+                            <th>alimentazione</th>
+                            <th>colore</th>
+                            <th>anno</th>
+                            <th>img</th>
+                            <th>dettagli</th>
+                            <th>elimina</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let auto of autoService?.automobili">
+                            <td>{{selectedModello.nome}}</td>
+                            <td>{{selectedModello.alimentazione}}</td>
+                            <td>{{auto.colore}}</td>
+                            <td>{{auto.anno}}</td>
+                            <td><img [src]="'assets/img/'+auto.img" style="height: 40px;" alt=""></td>
+                            <td><button class="btn-primary btn" (click)="details(auto.id)">Dettagli</button></td>
+                            <td><button class="btn-danger btn" (click)="deleteAuto(auto.id)">Elimina</button></td>
+                        </tr>
+                    </tbody>
+				</table>
+			</div>
+			<div class='col-lg-1 col-xl-2'> </div>					
+		</div>	
+		
+	
+	</div>	

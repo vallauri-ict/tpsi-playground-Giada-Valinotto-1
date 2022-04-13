@@ -14,10 +14,11 @@ import {MongoClient, ObjectId}  from "mongodb";     //Per interfacciarsi con Mon
 import bcrypt from "bcryptjs"   
 import jwt from "jsonwebtoken" //Gestione dei Web Token
 import environment from "./environment.json" //File che contiene le chiavi di accesso a Cloudinary e al DB
+import { createToken } from "typescript";
 
 // ***************************** Costanti *************************************
 const app = express();
-const CONNECTION_STRING = environment.CONNECTION_STRING_LOCAL
+const CONNECTION_STRING = environment.CONNECTION_STRING_ATLAS
 const DBNAME = "mail"
 const DURATA_TOKEN = 60 // sec
 const HTTP_PORT = 1337
@@ -25,6 +26,8 @@ const HTTPS_PORT = 1338
 const privateKey = fs.readFileSync("keys/privateKey.pem", "utf8"); //Lette dalla cartella keys
 const certificate = fs.readFileSync("keys/certificate.crt", "utf8");
 const credentials = { "key": privateKey, "cert": certificate };
+const JWTkey = fs.readFileSync("keys/JWTkey.pem", "utf8");
+
 cloudinary.v2.config({
 	cloud_name: environment.CLOUDINARY.CLOUD_NAME,
 	api_key: environment.CLOUDINARY.API_KEY,
@@ -102,14 +105,180 @@ app.use("/", fileUpload({
 
 /* ***************** (Sezione 2) middleware relativi a JWT ****************** */
 
+// Gestione dei login di tipo post
+app.post("/api/login", function (req, res, next){
+    //Connessione al DB
+    MongoClient.connect(CONNECTION_STRING, function(err,client){
+        if(err)
+        {
+            res.status(501).send("Errore nella connessione al database")["log"](err); //Per errori diversi da 500 è sufficiente la stringa 
+        }
+        else
+        {
+            const db = client.db(DBNAME);
+            const collection = db.collection("mail");
+            let username = req.body.username;
+            collection.findOne({"username": username}, function(err, dbuser){
+                if(err)
+                {
+                    res.status(500).send("Errore esecuzione query")["log"](err);
+                }
+                else
+                {
+                    //Controllo se ha trovato l'utente -> Username non corretto
+                    if(!dbuser)
+                    {
+                        res.status(401).send("Username non valido")["log"](err);
+                    }
+                    else
+                    {
+                        //Se ha trovato l'utente 
+                        //Confronto la password mandata (che devo prima cifrare) e quella corrente salvata nel DB
+                        //NON mandare la possword in chiaro !!!
+                        if(req.body.password) //Se il client ha mandato una password (ulteriore controllo)
+                        {
+                            //Controllo della validità della password prendendo il salt value (lo fa per noi il bcript compare)
+                            if(bcrypt.compareSync(req.body.password, dbuser.password))
+                            {
+                                //Creare e inviare il TOKEN
+                                let token = creaToken(dbuser); //passo le info dell'utente
+                                res.setHeader("authorization", token)
+                                
+                                //Risposta al Browser
+                                res.send({"ris": "ok"});
 
+                            }
+                            else
+                            {
+                                //Error 401
+                                res.status(401).send("Password mancante");
+                            }
+                        }
+                        else
+                        {
+                            res.status(401).send("Password non valida");
+                        }
+                    }
+                }
+            });
+        }
+    });
+})
 
+function creaToken(dbUser) //dbUser è un JSON 
+{
+    let data = Math.floor(((new Date()).getTime())/1000); //getTime restituisce i millsecondi, divido quindi per 1000 per avere il tempo in secondi
+    
+    let payload = {
+                    "id": dbUser.id,
+                    "username": dbUser.username,
+                    "iat": dbUser.iat || data, //Se il primo esiste, mette quello. Altrimenti, mette il secondo. 
+                    "exp": data + DURATA_TOKEN //expire delToken
+                  }
+    let token = jwt.sign(payload, JWTkey);
+    return token;
+}
 
+/* Middleware che risponde solo sui servizi per il CONTROLLO DEL TOKEN
+Usando / -> Risorsa completa richiesta dal Client
+Usando * -> Stringa vuota*/
+app.use("/api/", function(req,res,next) //Preferibile usare / per questioni di utilizzo di request.url
+{
+    //Controllo del Token
+    let token;
+    if(req.headers.authorization) //Se c'è intestazione Authorizaion quindi c'è il Token 
+    {
+        token = req.headers.authorization;
+        //Controllo validità del Token 
+        jwt.verify(token, JWTkey, function (err, payload){ //jwt.verify inietta alla funzione di callback il paload del token
+            if(err)
+            {
+                res.status(403).send("Token non valido");
+            }
+            else
+            {
+              //Rinnovo token
+              let newToken = creaToken(payload);
+              res.setHeader("authorization", newToken);
+              //Salvo id preso dal payload del token(NON tutto il Token!!) 
+              req["_id"] = newToken._id;
+              next();
+            }
+        })
+    }
+    else
+    {
+        //Errore 403
+        res.status(403).send("Token mancante");
+    }
+})
 
 /* ********************** (Sezione 3) USER ROUTES  ************************** */
 
+/* GESTIONE ELENCO MAIL */
+app.get("/api/elencoMail", function(req,res,next)
+{
+    //Middleware speciale in sezione JWT
 
+    //Step 1 : aprteura connessione al server
+    MongoClient.connect(CONNECTION_STRING, function(err,client){
+        if(err)
+        {
+            res.status(503).send("Errore connessione al DB");
+        }
+        else
+        {
+            const db = client.db(DBNAME);
+            const collection = db.collection("mail");
+            //Prendo id utente dall'header Authorization
+            const _id = req["_id"]; 
+            let oid = new ObjectId(_id);
+            let request = collection.findOne({"_id":oid})
+            request.then(function(data)
+            {
+                console.log(data);
+                res.send(data.mail.reverse());
+            });
+            request.catch(function(){
+                res.status(500).send("Errore esecuzione Query");
+            })
+            request.finally(function(){
+                client.close();
+            })
+        }
+    });
+});
 
+/* INVIO NUOVA MAIL */
+app.post("/api/newMail", function(req,res,next)
+{
+    MongoClient.connect(CONNECTION_STRING, function(err,client){
+        if(err)
+        {
+            res.status(503).send("Errore connessione al DB");
+        }
+        else
+        {
+            const db = client.db(DBNAME);
+            const collection = db.collection("mail");
+            //Prendo id utente dall'header Authorization
+            const _id = req["_id"]; 
+            let oid = new ObjectId(_id);
+            let mail = req.body.mail;
+            let request = collection.findOne({"_id":oid})
+            request.then(function(data)
+            {
+                console.log(data);
+                res.send(data.mail.reverse());
+            });
+            request.catch(function(){
+                res.status(500).send("Errore esecuzione Query");
+            })
+            request.finally(function(){
+                client.close();
+            })
+        }
+})
 
 /* ***************** (Sezione 4) DEFAULT ROUTE and ERRORS ******************* */
 // gestione degli errori
