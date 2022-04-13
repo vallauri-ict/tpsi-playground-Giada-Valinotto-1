@@ -6,7 +6,7 @@ L'obiettivo dell'esercizio è quello di realizzare un client di posta alla quale
 
 L'utente effettua l'accesso inserendo il suo indirizzo mail e la corrispondente password. In seguito alla verifica della validità del token, l'utente può così accedere alla visualizzazione delle mail e inviarne di nuove.
 
-I dettagli della realizzazione dell'esercizio sono indicati nell'[apposito file]()
+I dettagli della realizzazione dell'esercizio sono indicati nell'[apposito file](https://github.com/vallauri-ict/tpsi-playground-Giada-Valinotto-1/blob/main/JWT/Esercizio%20JWT%20Mail/Esercizio%20JWT%20Mail.pdf)
 
 ## JWT Token Authentication
 - L'utente si autentica mediante username e password
