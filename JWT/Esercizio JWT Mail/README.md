@@ -1,6 +1,6 @@
 # Esercizio JWT - Mail 📧
 
-## Obiettivo
+## Obiettivo   
 
 L'obiettivo dell'esercizio è quello di realizzare un client di posta alla quale gli utenti posso accedere grazie all'utilizzo di un token.
 
