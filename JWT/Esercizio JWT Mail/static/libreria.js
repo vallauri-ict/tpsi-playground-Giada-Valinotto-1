@@ -15,15 +15,16 @@ function inviaRichiesta(method, url, parameters = {}) {
         contentType: contentType,
         dataType: "json",
         timeout: 5000,
+        //prima di spedire la richiesta al server 
+        // recupera il token da localStorage
 		beforeSend: function(jqXHR) {
-            //Salvataggio del token in localstorage prima di inviare la richiesta al Server
 		   if ("token" in localStorage) {
-				let token = localStorage.getItem("token");  //Prende il token e lo spedisce al Server
+				let token = localStorage.getItem("token");  
 				jqXHR.setRequestHeader("Authorization", token);
 		   }
 		},
+        //dopo aver ricevuto il token dal server lo salva su localStorage
 		success: function(data, textStatus, jqXHR){
-            //Salva il token in localstorage
 			let token = jqXHR.getResponseHeader('Authorization')
 			localStorage.setItem("token", token)  
 		}
