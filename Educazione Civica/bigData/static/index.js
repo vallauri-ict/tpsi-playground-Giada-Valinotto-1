@@ -3,13 +3,18 @@ let myChart;
 $("document").ready(function(){
     $(".dropdown-item").on("click",function(){
         let id = $(this).text().split(' ')[0];
+        let timer = setInterval(function(){
         let request = inviaRichiesta("GET","/api/getData", {"sensor":id})
         request.done(function(data){
+            let ultimi200valori = data.reverse().splice(0,201); //Ottengo gli ultimi 200 valori registrati
             console.log(data)
-            disegnaGrafico(data)
+            disegnaGrafico(ultimi200valori)
+            $("#valoreMedio").html((media(ultimi200valori)).toFixed(3));
+            $("#deviazioneStandard").html(deviazioneStandard(ultimi200valori));
         });
         request.fail(errore)
-    })
+    },5000)
+})
 })
 
 function disegnaGrafico(data)
@@ -44,5 +49,14 @@ function disegnaGrafico(data)
     options: {
     }
 })
- 
+}
+
+function media(ultimi200valori)
+{
+    let somma = 0;
+    ultimi200valori.forEach(valore => {
+        somma+=valore.value;
+    });
+    console.log(somma/ultimi200valori.length);
+    return (somma/ultimi200valori.length);
 }
