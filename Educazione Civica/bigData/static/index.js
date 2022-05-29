@@ -2,6 +2,7 @@
 
 let myChart;
 $("document").ready(function(){
+    $("#statistica").hide();
     $(".dropdown-item").on("click",function(){
         let id = $(this).text().split(' ')[0];
         let timer = setInterval(function(){
@@ -12,6 +13,7 @@ $("document").ready(function(){
             disegnaGrafico(ultimi200valori)
             $("#valoreMedio").html((media(ultimi200valori)).toFixed(3));
             $("#deviazioneStandard").html(deviazioneStandard(ultimi200valori,$("#valoreMedio").html()).toFixed(3));
+            $("#statistica").fadeIn();
         });
         request.fail(errore)
     },5000)
@@ -36,13 +38,13 @@ function disegnaGrafico(data)
     data: {
         labels: labels,
         datasets: [{
-            label: data[0].sensor.sensorId,
+            label: "Sensore "+data[0].sensor.sensorId,
             data: values,
             backgroundColor: [
-                'rgba(153, 102, 255, 0.2)'  
+                '#9ed3d9' 
             ],
             borderColor: [
-                'rgba(153, 102, 255, 1)'
+                '#9ed3d9'
             ],
             borderWidth: 1
         }]

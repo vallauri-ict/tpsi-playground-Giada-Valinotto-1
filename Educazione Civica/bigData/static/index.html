@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Big Data</title>
-    <link rel="icon" href="img/icoVallauri.png" type="image/png" />
+    <title>Big Data - Valinotto</title>
+    <link rel="icon" href="img/icona.png" type="image/png" />
 
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -19,25 +19,19 @@
     <script type="text/javascript" src="index.js"></script>
 </head>
 
-
 <body>
     <div class="container">
-        <!-- Titolo -->
-        <div class="row align-items-center">
-            <div class="col-sm-2"> </div>
-            <div class="col-sm-8 text-center" style="padding:15px;">
-                <img src="img/vallauri.jpg" class="img-fluid">
-            </div>
-            <div class="col-sm-2">  </div>
+          <div class="jumbotron" style="margin-top: 20px;">
+            <h1 class="display-3">Big Data</h1>
+            <p class="lead">Valinotto Giada <br/> 5B Informatica 2021/2022 <br/> I.I.S. G. Vallauri Fossano </p>
         </div>
-
         <!--grafico-->
         <form class="form-inline">
             <div class="row">
                 <!-- TO -->
                 <div class="col-sm-12  text-center">
                     <div class="dropdown">
-						<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						<button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 						    Selezionare il sensore del quale visualizzare i valori e la statistica
 						</button>
 						<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -49,7 +43,8 @@
 						</div>
 					</div>
 					<canvas> </canvas>
-                    <div class="d-flex justify-content-center">
+                    <div id="statistica">
+                    <div class="d-flex justify-content-center" style="padding: 20px;">
                         <div class="mr-5">
                             <b>VALORE MEDIO:</b>
                             <p id="valoreMedio"> - </p>
@@ -60,9 +55,8 @@
                         </div>
               </div>
             </div>
+            </div>
         </form>
     </div>
-
 </body>
-
 </html>

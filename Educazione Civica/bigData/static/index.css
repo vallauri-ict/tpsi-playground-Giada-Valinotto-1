@@ -1,8 +1,15 @@
-
+.jumbotron {
+	background: url('img/jumbrotron.jpg');
+	background-size: cover;
+  }
 .row{
 	width:100%;
 }
 
 button{
 	margin:20px;
+}
+
+h1, .lead{
+	color: white;
 }
