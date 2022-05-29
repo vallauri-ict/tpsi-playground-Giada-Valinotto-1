@@ -1,4 +1,5 @@
 "use strict"
+
 let myChart;
 $("document").ready(function(){
     $(".dropdown-item").on("click",function(){
@@ -10,7 +11,7 @@ $("document").ready(function(){
             console.log(data)
             disegnaGrafico(ultimi200valori)
             $("#valoreMedio").html((media(ultimi200valori)).toFixed(3));
-            $("#deviazioneStandard").html(deviazioneStandard(ultimi200valori));
+            $("#deviazioneStandard").html(deviazioneStandard(ultimi200valori,$("#valoreMedio").html()).toFixed(3));
         });
         request.fail(errore)
     },5000)
@@ -59,4 +60,13 @@ function media(ultimi200valori)
     });
     console.log(somma/ultimi200valori.length);
     return (somma/ultimi200valori.length);
+}
+
+function deviazioneStandard(ultimi200valori, media)
+{
+    let somma = 0;
+    ultimi200valori.forEach(valore => {
+        somma += Math.pow(media-(valore.value),2)
+    });
+    return Math.sqrt(somma/ultimi200valori.length);
 }
